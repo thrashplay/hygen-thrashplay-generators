@@ -1,0 +1,31 @@
+{
+  "name": "hygen-thrashplay-node-generators",
+  "version": "0.1.1",
+  "description": "@thrashplay/sandbox-bootstrap templates for Node projects.",
+  "keywords": [
+    "code-generator",
+    "hygen",
+    "template"
+  ],
+  "license": "MIT",
+  "author": "Sean Kleinjung <sean@thrashplay.com>",
+  "main": "index.js",
+  "bin": {
+    "fetch-license": "./scripts/fetch-license.js",
+    "fetch-license-ids": "./scripts/fetch-license-ids.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github:thrashplay/hygen-thrashplay-node-generators"
+  },
+  "dependencies": {
+    "app-root-path": "^2.2.1",
+    "lodash": "^4.17.15",
+    "node-fetch": "^2.6.0"
+  },
+  "devDependencies": {
+  },
+  "peerDependencies": {
+    "hygen": "^4.0.9"
+  }
+}

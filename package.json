@@ -1,6 +1,6 @@
 {
   "name": "hygen-thrashplay-node-generators",
-  "version": "0.1.2",
+  "version": "0.1.29",
   "description": "@thrashplay/sandbox-bootstrap templates for Node projects.",
   "keywords": [
     "code-generator",
@@ -14,6 +14,10 @@
     "fetch-license": "./scripts/fetch-license.js",
     "fetch-license-ids": "./scripts/fetch-license-ids.js"
   },
+  "scripts": {
+    "postinstall": "node scripts/install.js",
+    "postuninstall": "node scripts/uninstall.js"
+  },
   "repository": {
     "type": "git",
     "url": "github:thrashplay/hygen-thrashplay-node-generators"
@@ -21,10 +25,8 @@
   "dependencies": {
     "app-root-path": "^2.2.1",
     "lodash": "^4.17.15",
+    "ncp": "^2.0.0",
     "node-fetch": "^2.6.0"
-  },
-  "devDependencies": {
-    "hygen": "^4.0.9"
   },
   "peerDependencies": {
     "hygen": "^4.0.9"

@@ -1,0 +1,33 @@
+diff --git a/node_modules/hygen/lib/bin.js b/node_modules/hygen/lib/bin.js
+index b6c2892..2e6886d 100644
+--- a/node_modules/hygen/lib/bin.js
++++ b/node_modules/hygen/lib/bin.js
+@@ -18,7 +18,10 @@ runner(process.argv.slice(2), {
+     const opts = body && body.length > 0 ? {
+       input: body
+     } : {};
+-    return require('execa').shell(action, opts);
++	// PATCH: pipe shell exec's stdout to the stdout of the Hygen process
++	const execa = require('execa').shell(action, opts);
++	execa.stdout.pipe(process.stdout);	
++    return execa;
+   },
+   createPrompter: () => require('enquirer')
+ });
+\ No newline at end of file
+diff --git a/node_modules/hygen/src/bin.js b/node_modules/hygen/src/bin.js
+index 62ed47a..6e36244 100644
+--- a/node_modules/hygen/src/bin.js
++++ b/node_modules/hygen/src/bin.js
+@@ -12,7 +12,10 @@ runner(process.argv.slice(2), {
+   debug: !!process.env.DEBUG,
+   exec: (action, body) => {
+     const opts = body && body.length > 0 ? { input: body } : {}
+-    return require('execa').shell(action, opts)
++	// PATCH: pipe shell exec's stdout to the stdout of the Hygen process
++	const execa = require('execa').shell(action, opts);
++	execa.stdout.pipe(process.stdout);	
++    return execa;
+   },
+   createPrompter: () => require('enquirer')
+ })

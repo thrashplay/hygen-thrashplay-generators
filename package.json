@@ -10,17 +10,22 @@
   "license": "MIT",
   "author": "Sean Kleinjung <sean@thrashplay.com>",
   "scripts": {
-    "template": "HYGEN_TMPLS=packages/hygen-thrashplay-node-generators/templates hygen"
+    "build": "yarn lerna run build",
+    "release": "yarn lerna publish --conventional-commits",
+    "template": "cross-env HYGEN_TMPLS=packages/hygen-thrashplay-node-generators/templates yarn hygen"
   },
   "repository": {
     "type": "git",
     "url": "github:thrashplay/hygen-thrashplay-generators"
   },
   "private": true,
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
+    "app-root-path": "^2.2.1",
+    "cross-env": "^6.0.3",
+    "hygen": "^4.0.9",
     "lerna": "^3.16.4",
-    "npx": "^10.2.0"
+    "npx": "^10.2.0",
+    "patch-package": "^6.2.0"
   }
 }

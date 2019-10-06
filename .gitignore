@@ -62,3 +62,6 @@ typings/
 
 # IntelliJ / WebStorm files
 /.idea/workspace.xml
+
+# dist folders
+dist

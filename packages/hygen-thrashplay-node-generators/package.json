@@ -11,8 +11,8 @@
   "author": "Sean Kleinjung <sean@thrashplay.com>",
   "main": "index.js",
   "bin": {
-    "fetch-license": "./scripts/fetch-license.js",
-    "fetch-license-ids": "./scripts/fetch-license-ids.js",
+    "fetch-license": "../hygen-thrashplay-node-lib/src/fetch-license.js",
+    "fetch-license-ids": "../hygen-thrashplay-node-lib/src/fetch-license-ids.js",
     "install-node-generators": "node scripts/install.js",
     "uninstall-node-generators": "node scripts/uninstall.js"
   },
@@ -27,15 +27,12 @@
   },
   "dependencies": {
     "app-root-path": "^2.2.1",
-    "lodash": "^4.17.15",
-    "ncp": "^2.0.0",
-    "node-fetch": "^2.6.0"
+    "hygen-thrashplay-node-lib": "^0.0.0",
+    "lodash": "^4.17.15"
   },
   "peerDependencies": {
     "hygen": "^4.0.9"
   },
   "devDependencies": {
-    "lerna": "^3.16.4",
-    "npx": "^10.2.0"
   }
 }

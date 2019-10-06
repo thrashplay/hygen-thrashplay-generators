@@ -28,6 +28,8 @@ const main = () => {
     let sourceDir = path.resolve(currentDirectory, 'node_modules', process.env.npm_package_name, 'templates');
     let targetDir = path.resolve(currentDirectory, '_templates');
     addTemplates(sourceDir, targetDir)
+
+    console.log('To remove hygen-thrashplay-node-generators: `uninstall-node-generators`')
 }
 
 main()

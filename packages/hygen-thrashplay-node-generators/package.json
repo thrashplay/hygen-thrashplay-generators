@@ -11,10 +11,8 @@
   "author": "Sean Kleinjung <sean@thrashplay.com>",
   "main": "index.js",
   "bin": {
-    "fetch-license": "../hygen-thrashplay-node-lib/src/fetch-license.js",
-    "fetch-license-ids": "../hygen-thrashplay-node-lib/src/fetch-license-ids.js",
-    "install-node-generators": "node scripts/install.js",
-    "uninstall-node-generators": "node scripts/uninstall.js"
+    "install-node-generators": "scripts/install.js",
+    "uninstall-node-generators": "scripts/uninstall.js"
   },
   "scripts": {
     "buid": "echo No build script defined.",

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const _ = require('lodash')
-const github = require('../../../lib/github-api')
+const github = require('./github-api')
 const [,, ...args] = process.argv
 
 if (args.length !== 1) {

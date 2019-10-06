@@ -9,6 +9,9 @@
   ],
   "license": "MIT",
   "author": "Sean Kleinjung <sean@thrashplay.com>",
+  "scripts": {
+    "template": "HYGEN_TMPLS=packages/hygen-thrashplay-node-generators/templates hygen"
+  },
   "repository": {
     "type": "git",
     "url": "github:thrashplay/hygen-thrashplay-generators"

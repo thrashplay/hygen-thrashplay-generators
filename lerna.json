@@ -1,7 +1,8 @@
 {
   "command": {
     "version": {
-      "allowBranch": "master"
+      "allowBranch": "master",
+      "message": "chore(release): publish latest versions"
     }
   },
   "ignore-changes": [
@@ -12,5 +13,5 @@
   "packages": [
     "packages/*"
   ],
-  "version": "0.2.0"
+  "version": "independent"
 }

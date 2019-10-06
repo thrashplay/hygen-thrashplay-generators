@@ -1,6 +1,6 @@
 {
   "name": "hygen-thrashplay-node-generators",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "@thrashplay/sandbox-bootstrap templates for Node projects.",
   "keywords": [
     "code-generator",

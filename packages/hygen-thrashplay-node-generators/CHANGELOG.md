@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.4](https://github.com/thrashplay/hygen-thrashplay-node-generators/compare/hygen-thrashplay-node-generators@0.3.3...hygen-thrashplay-node-generators@0.3.4) (2019-10-06)
+
+
+### Bug Fixes
+
+* add missing shebangs ([9e3e467](https://github.com/thrashplay/hygen-thrashplay-node-generators/commit/9e3e467))
+
+
+
+
+
 ## [0.3.3](https://github.com/thrashplay/hygen-thrashplay-node-generators/compare/hygen-thrashplay-node-generators@0.3.2...hygen-thrashplay-node-generators@0.3.3) (2019-10-06)
 
 

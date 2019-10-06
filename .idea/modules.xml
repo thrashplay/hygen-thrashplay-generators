@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/hygen-thrashplay-node-generators.iml" filepath="$PROJECT_DIR$/hygen-thrashplay-node-generators.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hygen-thrashplay-generators.iml" filepath="$PROJECT_DIR$/hygen-thrashplay-generators.iml" />
     </modules>
   </component>
 </project>

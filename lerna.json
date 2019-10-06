@@ -1,0 +1,12 @@
+{
+  "command": {
+    "version": {
+      "allowBranch": "master"
+    }
+  },
+  "ignore-changes": ["**/*.md", "**/*.test.ts", "**/_templates/**"],
+  "packages": [
+    "packages/*"
+  ],
+  "version": "0.0.0"
+}

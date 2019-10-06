@@ -1,0 +1,35 @@
+kind: pipeline
+name: default
+
+steps:
+  - name: build-and-test
+    image: node:<%= nodeVersion %>
+    commands:
+      - yarn
+      - yarn build
+      - yarn test
+
+  - name: ui-web_publish-docker
+    image: plugins/gcr
+    settings:
+      dockerfile: ui-web/Dockerfile
+      context: ui-web
+      repo: shard-232101/paragon-web
+      tags:
+        - "latest"
+        - "${DRONE_COMMIT_BRANCH}-${DRONE_COMMIT}"
+      json_key:
+        from_secret: gcr-credentials
+    when:
+      event:
+      - push
+
+trigger:
+  branch:
+  - master
+---
+kind: secret
+name: gcr-credentials
+get:
+  path: gcr-credentials
+  name: json_key

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.1](https://github.com/thrashplay/hygen-thrashplay-node-generators/compare/hygen-thrashplay-node-generators@0.3.0...hygen-thrashplay-node-generators@0.3.1) (2019-10-06)
+
+
+### Bug Fixes
+
+* Improved lerna init functionality. ([d962553](https://github.com/thrashplay/hygen-thrashplay-node-generators/commit/d962553))
+
+
+
+
+
 # 0.3.0 (2019-10-06)
 
 

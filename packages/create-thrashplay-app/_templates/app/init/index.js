@@ -49,9 +49,8 @@ const getDerivedArgs = (args) => {
   if (!args) {
     throw new Error('no `args` were specified!')
   }
-
-  console.log('Package.json:')
-  console.log(JSON.stringify(require(path.resolve(appRoot.path, 'package.json')), null, '  '))
+  console.log('Package.json:', appRoot.path)
+  while (1) ;
 
   return {
     createThrashplayAppVersion: getPackageVersion(),

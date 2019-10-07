@@ -49,16 +49,14 @@ const getDerivedArgs = (args) => {
   if (!args) {
     throw new Error('no `args` were specified!')
   }
-  console.log('Package.json:', appRoot.path)
-  while (1) ;
 
   return {
     createThrashplayAppVersion: getPackageVersion(),
-    scriptsDir: path.resolve(appRoot.path, 'dist'),
+    scriptsDir: path.resolve(appRoot.path, 'node_modules', 'create-thrashplay-app', 'dist',),
     projectDir: path.resolve(process.cwd(), args.name),
     packageName: getPackageName(),
     ...args,
-    templateSourceDir: path.resolve(appRoot.path, 'dist', 'templates'),
+    templateSourceDir: path.resolve(appRoot.path, 'node_modules', 'create-thrashplay-app', 'dist', 'templates'),
   }
 }
 

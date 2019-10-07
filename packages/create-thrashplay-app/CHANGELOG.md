@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.12](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-app@0.2.11...create-thrashplay-app@0.2.12) (2019-10-07)
+
+
+### Bug Fixes
+
+* Troubleshooting cli. ([d0c7788](https://github.com/thrashplay/thrashplay-app-creators/commit/d0c7788))
+
+
+
+
+
 ## [0.2.11](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-app@0.2.10...create-thrashplay-app@0.2.11) (2019-10-07)
 
 

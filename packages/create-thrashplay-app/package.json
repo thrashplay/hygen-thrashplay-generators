@@ -7,15 +7,14 @@
   ],
   "license": "MIT",
   "author": "Sean Kleinjung <sean@thrashplay.com>",
+  "main": "dist/cli.js",
   "bin": {
+    "create-thrashplay-app": "dist/cli.js",
     "fetch-license": "dist/fetch-license.js",
-    "fetch-license-ids": "dist/fetch-license-ids.js",
-    "install-node-generators": "scripts/install.js",
-    "uninstall-node-generators": "scripts/uninstall.js"
+    "fetch-license-ids": "dist/fetch-license-ids.js"
   },
   "scripts": {
     "build": "rm -rf dist && cp -R ../create-thrashplay-app/src dist",
-    "create-thrashplay-app": "yarn hygen app",
     "test": "echo No test script defined."
   },
   "repository": {
@@ -24,13 +23,12 @@
   },
   "dependencies": {
     "app-root-path": "^2.2.1",
+    "hygen": "^4.0.9",
     "lodash": "^4.17.15",
     "ncp": "^2.0.0",
     "node-fetch": "^2.6.0"
   },
   "devDependencies": {
-    "hygen": "^4.0.9",
-    "patch-package": "^6.2.0"
   },
   "peerDependencies": {
     "hygen": "^4.0.9"

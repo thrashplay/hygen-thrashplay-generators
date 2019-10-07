@@ -21,7 +21,7 @@ module.exports = {
         return {
             createThrashplayAppVersion: getPackageVersion(),
             scriptsDir: path.resolve(appRoot.path, 'dist'),
-            projectDir: path.resolve(appRoot.path),
+            projectDir: path.resolve(process.cwd(), args.name),
             packageName: getPackageName(),
         }
     }

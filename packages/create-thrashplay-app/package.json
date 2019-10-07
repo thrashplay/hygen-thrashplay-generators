@@ -17,6 +17,7 @@
   },
   "scripts": {
     "build": "rm -rf dist && cp -R src dist",
+    "clean": "rm -rf dist",
     "test": "echo No test script defined."
   },
   "repository": {

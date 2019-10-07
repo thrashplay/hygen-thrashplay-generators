@@ -21,6 +21,9 @@
     "type": "git",
     "url": "github:thrashplay/thrashplay-app-creators"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@thrashplay/github-helpers": "^0.0.1",
     "app-root-path": "^2.2.1",
@@ -30,5 +33,6 @@
   },
   "peerDependencies": {
     "hygen": "^4.0.9"
-  }
+  },
+  "gitHead": "55b57ebbb0fec25f9feee3fb3cf82b70f086ca73"
 }

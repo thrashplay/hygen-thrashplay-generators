@@ -16,8 +16,12 @@
     "type": "git",
     "url": "github:thrashplay/thrashplay-app-creators"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "lodash": "^4.17.15",
     "node-fetch": "^2.6.0"
-  }
+  },
+  "gitHead": "55b57ebbb0fec25f9feee3fb3cf82b70f086ca73"
 }

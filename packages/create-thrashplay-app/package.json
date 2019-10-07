@@ -10,13 +10,11 @@
   "main": "dist/cli.js",
   "bin": {
     "create-thrashplay-app": "dist/cli.js",
-    "fetch-license": "dist/fetch-license.js",
-    "fetch-license-ids": "dist/fetch-license-ids.js",
     "install-thrashplay-templates": "dist/install.js",
     "uninstall-thrashplay-templates": "dist/uninstall.js"
   },
   "scripts": {
-    "build": "rm -rf dist && cp -R ../create-thrashplay-app/src dist",
+    "build": "rm -rf dist && cp -R src dist",
     "test": "echo No test script defined."
   },
   "repository": {
@@ -24,11 +22,11 @@
     "url": "github:thrashplay/thrashplay-app-creators"
   },
   "dependencies": {
+    "@thrashplay/github-helpers": "^0.0.0",
     "app-root-path": "^2.2.1",
     "hygen": "^4.0.9",
     "lodash": "^4.17.15",
-    "ncp": "^2.0.0",
-    "node-fetch": "^2.6.0"
+    "ncp": "^2.0.0"
   },
   "peerDependencies": {
     "hygen": "^4.0.9"

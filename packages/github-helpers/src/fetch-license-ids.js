@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const _ = require('lodash')
-const github = require('./github-api')
+const github = require('./index')
 
 const handleError = (error) => {
     console.log('Failed to retrieve license:', args[0])

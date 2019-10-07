@@ -2,14 +2,10 @@
   "name": "hygen-thrashplay-generators",
   "version": "0.1.0",
   "description": "@thrashplay/sandbox-bootstrap templates",
-  "keywords": [
-    "code-generator",
-    "hygen",
-    "template"
-  ],
   "license": "MIT",
   "author": "Sean Kleinjung <sean@thrashplay.com>",
   "scripts": {
+    "bootstrap": "yarn lerna bootstrap",
     "build": "yarn lerna run build",
     "release": "yarn lerna publish --conventional-commits",
     "template": "cross-env HYGEN_TMPLS=packages/hygen-thrashplay-node-generators/templates yarn hygen"
@@ -21,11 +17,6 @@
   "private": true,
   "dependencies": {},
   "devDependencies": {
-    "app-root-path": "^2.2.1",
-    "cross-env": "^6.0.3",
-    "hygen": "^4.0.9",
-    "lerna": "^3.16.4",
-    "npx": "^10.2.0",
-    "patch-package": "^6.2.0"
+    "lerna": "^3.16.4"
   }
 }

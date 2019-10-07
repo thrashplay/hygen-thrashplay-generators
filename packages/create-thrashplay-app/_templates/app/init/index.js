@@ -1,7 +1,7 @@
 const _ = require('lodash')
 const path = require('path')
 const appRoot = require('app-root-path')
-const github = require(path.resolve(appRoot.path, 'dist', 'github-api'))
+const github = require('@thrashplay/github-helpers')
 
 const getLicenses = () => {
   return github.get('/licenses')

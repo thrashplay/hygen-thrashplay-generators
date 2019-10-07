@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.7](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-app@0.2.6...create-thrashplay-app@0.2.7) (2019-10-07)
+
+
+### Bug Fixes
+
+* Update paths to run via npx. ([4793fb1](https://github.com/thrashplay/thrashplay-app-creators/commit/4793fb1))
+
+
+
+
+
 ## [0.2.6](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-app@0.2.5...create-thrashplay-app@0.2.6) (2019-10-07)
 
 

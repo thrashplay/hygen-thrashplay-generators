@@ -1,6 +1,6 @@
 {
   "name": "create-thrashplay-app",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "Tool used to initialize a new Thrashplay node project.",
   "keywords": [
     "code-generator"

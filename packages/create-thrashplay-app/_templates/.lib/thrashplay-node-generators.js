@@ -20,9 +20,8 @@ module.exports = {
     params: ({args}) => {
         return {
             createThrashplayAppVersion: getPackageVersion(),
-            scriptsDir: path.resolve(appRoot.path, 'scripts'),
+            scriptsDir: path.resolve(appRoot.path, 'dist'),
             projectDir: path.resolve(appRoot.path),
-            packageManager: args.packageManager || 'yarn',
             packageName: getPackageName(),
         }
     }

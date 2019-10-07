@@ -2,6 +2,14 @@
 # yarn lockfile v1
 
 
+"@thrashplay/github-helpers@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@thrashplay/github-helpers/-/github-helpers-0.0.4.tgz#156179bccfc3e3830a5336a44ce4076eca825d45"
+  integrity sha512-m5UUq6StRLtU5f6a0D7q2omuEYL7fVisuxSNsf2yK33mw5+y5J1rrii+W4u3cn0EzWAu+XCf2D4tufcnDSmcIw==
+  dependencies:
+    lodash "^4.17.15"
+    node-fetch "^2.6.0"
+
 ansi-colors@^3.2.1:
   version "3.2.4"
   resolved "https://registry.yarnpkg.com/ansi-colors/-/ansi-colors-3.2.4.tgz#e3a3da4bfbae6c86a9c285625de124a234026fbf"

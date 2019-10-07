@@ -5,10 +5,6 @@
   "license": "MIT",
   "author": "Sean Kleinjung <sean@thrashplay.com>",
   "main": "dist/index.js",
-  "bin": {
-    "fetch-license": "dist/fetch-license.js",
-    "fetch-license-ids": "dist/fetch-license-ids.js"
-  },
   "scripts": {
     "build": "rm -rf dist && cp -R src dist",
     "test": "echo No test script defined."

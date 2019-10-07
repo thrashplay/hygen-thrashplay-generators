@@ -2,6 +2,7 @@ const _ = require('lodash')
 const path = require('path')
 const appRoot = require('app-root-path')
 const github = require('@thrashplay/github-helpers')
+const helpers = require('../../.lib/thrashplay-node-generators.js')
 
 const getLicenses = () => {
   return github.get('/licenses')
@@ -33,9 +34,8 @@ const notEmpty =(value) => {
 
 const getDerivedArgs = (args) => {
   return {
-    projectDir: path.resolve(process.cwd(), args.name),
-    sandboxDir: path.resolve(appRoot.path),
-    scriptsDir: path.resolve(appRoot.path, 'dist'),
+    ...helpers.params(args),
+    ...args,
     templateSourceDir: path.resolve(appRoot.path, 'dist', 'templates'),
   }
 }

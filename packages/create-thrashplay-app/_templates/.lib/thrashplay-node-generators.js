@@ -17,7 +17,7 @@ const getPackageVersion = () => {
 }
 
 module.exports = {
-    params: ({args}) => {
+    params: (args) => {
         return {
             createThrashplayAppVersion: getPackageVersion(),
             scriptsDir: path.resolve(appRoot.path, 'dist'),

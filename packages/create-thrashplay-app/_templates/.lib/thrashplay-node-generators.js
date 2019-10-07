@@ -1,7 +1,7 @@
 const _ = require('lodash')
 const path = require('path')
 const appRoot = require('app-root-path')
-const packageJson = require('../../../../package.json');
+const packageJson = require('../../package.json');
 
 const fromPackageJson = (path) => {
     return _.get(packageJson, path)

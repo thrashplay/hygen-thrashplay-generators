@@ -1,12 +1,13 @@
 {
   "name": "@thrashplay/github-helpers",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Helper methods used by create-thrashplay-app for accessing GitHub APIs.",
   "license": "MIT",
   "author": "Sean Kleinjung <sean@thrashplay.com>",
   "main": "dist/index.js",
   "scripts": {
     "build": "rm -rf dist && cp -R src dist",
+    "clean": "rm -rf dist",
     "test": "echo No test script defined."
   },
   "repository": {

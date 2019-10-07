@@ -7,8 +7,10 @@
   "scripts": {
     "bootstrap": "yarn lerna bootstrap",
     "build": "yarn lerna run build",
+    "clean": "yarn lerna run clean",
     "release": "yarn lerna publish --conventional-commits",
-    "template": "cross-env HYGEN_TMPLS=packages/hygen-thrashplay-node-generators/templates yarn hygen"
+    "template": "cross-env HYGEN_TMPLS=packages/hygen-thrashplay-node-generators/templates yarn hygen",
+    "test": "yarn lerna run test"
   },
   "repository": {
     "type": "git",

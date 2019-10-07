@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.1](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-app@0.3.0...create-thrashplay-app@0.3.1) (2019-10-07)
+
+
+### Bug Fixes
+
+* Add clean tasks to package.json files. ([8e2752b](https://github.com/thrashplay/thrashplay-app-creators/commit/8e2752b))
+
+
+
+
+
 # [0.3.0](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-app@0.2.1...create-thrashplay-app@0.3.0) (2019-10-07)
 
 

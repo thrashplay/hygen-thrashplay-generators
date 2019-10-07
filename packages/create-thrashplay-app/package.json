@@ -1,6 +1,6 @@
 {
   "name": "create-thrashplay-app",
-  "version": "0.2.1",
+  "version": "0.2.18",
   "description": "Tool used to initialize a new Thrashplay node project.",
   "keywords": [
     "code-generator"
@@ -10,6 +10,8 @@
   "main": "dist/cli.js",
   "bin": {
     "create-thrashplay-app": "dist/cli.js",
+    "fetch-license": "dist/fetch-license.js",
+    "fetch-license-ids": "dist/fetch-license-ids.js",
     "install-thrashplay-templates": "dist/install.js",
     "uninstall-thrashplay-templates": "dist/uninstall.js"
   },
@@ -21,8 +23,11 @@
     "type": "git",
     "url": "github:thrashplay/thrashplay-app-creators"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
-    "@thrashplay/github-helpers": "^0.0.1",
+    "@thrashplay/github-helpers": "^0.0.5",
     "app-root-path": "^2.2.1",
     "hygen": "^4.0.9",
     "lodash": "^4.17.15",
@@ -30,5 +35,6 @@
   },
   "peerDependencies": {
     "hygen": "^4.0.9"
-  }
+  },
+  "gitHead": "27c768c29d9101bacf89d07625c47d297a8eafcc"
 }

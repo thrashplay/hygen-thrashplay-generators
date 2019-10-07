@@ -66,10 +66,10 @@ const deleteTemplates = (sourceDir, targetDir) => {
 const main = () => {
     console.log('Uninstalling Thrashplay templates...')
 
-    const appRoot = appRoot.path
+    const root = appRoot.path
 
     let sourceDir = path.resolve(__dirname, 'templates');
-    let targetDir = path.resolve(appRoot, '_templates');
+    let targetDir = path.resolve(root, '_templates');
     deleteTemplates(sourceDir, targetDir)
     deleteIfEmpty(targetDir)
 }

@@ -2,6 +2,20 @@ const _ = require('lodash')
 const path = require('path')
 const appRoot = require('app-root-path')
 const github = require('@thrashplay/github-helpers')
+const packageJson = require('../../../package.json');
+
+const fromPackageJson = (path) => {
+  return _.get(packageJson, path)
+}
+
+const getPackageName = () => {
+  const nameParts = fromPackageJson('name').split('/')
+  return nameParts.length > 1 ? nameParts[1] : nameParts[0]
+}
+
+const getPackageVersion = () => {
+  return '^' + fromPackageJson('version')
+}
 
 const getLicenses = () => {
   return github.get('/licenses')
@@ -32,11 +46,17 @@ const notEmpty =(value) => {
 }
 
 const getDerivedArgs = (args) => {
+  if (!args) {
+    throw new Error('no `args` were specified!')
+  }
+
   return {
+    createThrashplayAppVersion: getPackageVersion(),
+    createThrashplayAppScriptsDir: path.resolve(appRoot.path, 'node_modules', 'create-thrashplay-app', 'dist'),
     projectDir: path.resolve(process.cwd(), args.name),
-    sandboxDir: path.resolve(appRoot.path),
-    scriptsDir: path.resolve(appRoot.path, 'dist'),
-    templateSourceDir: path.resolve(appRoot.path, 'dist', 'templates'),
+    packageName: getPackageName(),
+    ...args,
+    templateSourceDir: path.resolve(appRoot.path, 'node_modules', 'create-thrashplay-app', 'dist', 'templates'),
   }
 }
 

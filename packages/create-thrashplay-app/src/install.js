@@ -25,10 +25,10 @@ const addTemplates = (sourceDir, targetDir) => {
 const main = () => {
     console.log('Installing Thrashplay templates...')
 
-    const appRoot = appRoot.path
+    const root = appRoot.path
 
     let sourceDir = path.resolve(__dirname, 'templates');
-    let targetDir = path.resolve(appRoot, '_templates');
+    let targetDir = path.resolve(root, '_templates');
     addTemplates(sourceDir, targetDir)
 
     console.log('To remove Thrashplay tempaltes: `uninstall-thrashplay-templates`')

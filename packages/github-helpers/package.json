@@ -1,13 +1,10 @@
 {
   "name": "@thrashplay/github-helpers",
-  "version": "0.0.1",
+  "version": "0.0.5",
   "description": "Helper methods used by create-thrashplay-app for accessing GitHub APIs.",
   "license": "MIT",
   "author": "Sean Kleinjung <sean@thrashplay.com>",
-  "bin": {
-    "fetch-license": "dist/fetch-license.js",
-    "fetch-license-ids": "dist/fetch-license-ids.js"
-  },
+  "main": "dist/index.js",
   "scripts": {
     "build": "rm -rf dist && cp -R src dist",
     "test": "echo No test script defined."
@@ -16,8 +13,12 @@
     "type": "git",
     "url": "github:thrashplay/thrashplay-app-creators"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "lodash": "^4.17.15",
     "node-fetch": "^2.6.0"
-  }
+  },
+  "gitHead": "27c768c29d9101bacf89d07625c47d297a8eafcc"
 }

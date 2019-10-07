@@ -2,7 +2,7 @@
 to: <%= projectDir %>/package.json
 ---
 {
-  "name": "<%= locals.name %>",
+  "name": "<%= name %>",
   "version": "0.1.0",
   "description": "<%= description %>",
   "private": true,

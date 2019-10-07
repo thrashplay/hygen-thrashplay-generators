@@ -3,6 +3,187 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.18](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-app@0.2.17...create-thrashplay-app@0.2.18) (2019-10-07)
+
+
+### Bug Fixes
+
+* Troubleshooting cli. ([5ba2afa](https://github.com/thrashplay/thrashplay-app-creators/commit/5ba2afa))
+
+
+
+
+
+## [0.2.17](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-app@0.2.16...create-thrashplay-app@0.2.17) (2019-10-07)
+
+
+### Bug Fixes
+
+* Troubleshooting cli. ([d38e278](https://github.com/thrashplay/thrashplay-app-creators/commit/d38e278))
+
+
+
+
+
+## [0.2.16](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-app@0.2.15...create-thrashplay-app@0.2.16) (2019-10-07)
+
+
+### Bug Fixes
+
+* Troubleshooting cli. ([67ae92c](https://github.com/thrashplay/thrashplay-app-creators/commit/67ae92c))
+
+
+
+
+
+## [0.2.15](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-app@0.2.14...create-thrashplay-app@0.2.15) (2019-10-07)
+
+
+### Bug Fixes
+
+* Troubleshooting cli. ([d8020f1](https://github.com/thrashplay/thrashplay-app-creators/commit/d8020f1))
+
+
+
+
+
+## [0.2.14](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-app@0.2.13...create-thrashplay-app@0.2.14) (2019-10-07)
+
+
+### Bug Fixes
+
+* Troubleshooting cli. ([b9980f4](https://github.com/thrashplay/thrashplay-app-creators/commit/b9980f4))
+
+
+
+
+
+## [0.2.13](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-app@0.2.12...create-thrashplay-app@0.2.13) (2019-10-07)
+
+
+### Bug Fixes
+
+* Troubleshooting cli. ([13daff9](https://github.com/thrashplay/thrashplay-app-creators/commit/13daff9))
+
+
+
+
+
+## [0.2.12](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-app@0.2.11...create-thrashplay-app@0.2.12) (2019-10-07)
+
+
+### Bug Fixes
+
+* Troubleshooting cli. ([d0c7788](https://github.com/thrashplay/thrashplay-app-creators/commit/d0c7788))
+
+
+
+
+
+## [0.2.11](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-app@0.2.10...create-thrashplay-app@0.2.11) (2019-10-07)
+
+
+### Bug Fixes
+
+* Troubleshooting cli. ([93a6233](https://github.com/thrashplay/thrashplay-app-creators/commit/93a6233))
+
+
+
+
+
+## [0.2.10](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-app@0.2.9...create-thrashplay-app@0.2.10) (2019-10-07)
+
+
+### Bug Fixes
+
+* Troubleshooting cli. ([6274503](https://github.com/thrashplay/thrashplay-app-creators/commit/6274503))
+
+
+
+
+
+## [0.2.9](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-app@0.2.8...create-thrashplay-app@0.2.9) (2019-10-07)
+
+
+### Bug Fixes
+
+* Troubleshooting cli. ([510b541](https://github.com/thrashplay/thrashplay-app-creators/commit/510b541))
+
+
+
+
+
+## [0.2.8](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-app@0.2.7...create-thrashplay-app@0.2.8) (2019-10-07)
+
+
+### Bug Fixes
+
+* Troubleshooting cli. ([19162cc](https://github.com/thrashplay/thrashplay-app-creators/commit/19162cc))
+
+
+
+
+
+## [0.2.7](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-app@0.2.6...create-thrashplay-app@0.2.7) (2019-10-07)
+
+
+### Bug Fixes
+
+* Update paths to run via npx. ([4793fb1](https://github.com/thrashplay/thrashplay-app-creators/commit/4793fb1))
+
+
+
+
+
+## [0.2.6](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-app@0.2.5...create-thrashplay-app@0.2.6) (2019-10-07)
+
+
+### Bug Fixes
+
+* Update package.json path. ([6a9bc46](https://github.com/thrashplay/thrashplay-app-creators/commit/6a9bc46))
+
+
+
+
+
+## [0.2.5](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-app@0.2.4...create-thrashplay-app@0.2.5) (2019-10-07)
+
+
+### Bug Fixes
+
+* Move license fetchers. ([e1d9fc1](https://github.com/thrashplay/thrashplay-app-creators/commit/e1d9fc1))
+
+
+
+
+
+## [0.2.4](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-app@0.2.3...create-thrashplay-app@0.2.4) (2019-10-07)
+
+**Note:** Version bump only for package create-thrashplay-app
+
+
+
+
+
+## [0.2.3](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-app@0.2.2...create-thrashplay-app@0.2.3) (2019-10-07)
+
+**Note:** Version bump only for package create-thrashplay-app
+
+
+
+
+
+## [0.2.2](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-app@0.2.1...create-thrashplay-app@0.2.2) (2019-10-07)
+
+
+### Bug Fixes
+
+* Set package public access to public. ([2f804d5](https://github.com/thrashplay/thrashplay-app-creators/commit/2f804d5))
+
+
+
+
+
 ## [0.2.1](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-app@0.2.0...create-thrashplay-app@0.2.1) (2019-10-07)
 
 

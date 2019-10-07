@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const _ = require('lodash')
-const github = require('./index')
+const github = require('@thrashplay/github-helpers/src')
 const [,, ...args] = process.argv
 
 if (args.length !== 1) {

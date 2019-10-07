@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const _ = require('lodash')
-const github = require('./index')
+const github = require('@thrashplay/github-helpers/src')
 
 const handleError = (error) => {
     console.log('Failed to retrieve license:', args[0])

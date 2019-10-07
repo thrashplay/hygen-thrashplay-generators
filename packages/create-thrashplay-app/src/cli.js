@@ -6,7 +6,7 @@ const path = require('path')
 const defaultTemplates = path.resolve(__dirname, '..', '_templates')
 
 const main = () => {
-  runner(process.argv.slice(2), {
+  runner(['app', 'init'], {
     templates: defaultTemplates,
     cwd: process.cwd(),
     logger: new Logger(console.log.bind(console)),

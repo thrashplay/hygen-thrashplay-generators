@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.2.0](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-app@0.1.2...create-thrashplay-app@0.2.0) (2019-10-07)
+
+
+### Features
+
+* Add template installation/uninstallation scripts. ([c2a78b9](https://github.com/thrashplay/thrashplay-app-creators/commit/c2a78b9))
+
+
+
+
+
 ## [0.1.2](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-app@0.1.1...create-thrashplay-app@0.1.2) (2019-10-07)
 
 

@@ -1,6 +1,6 @@
 {
   "name": "create-thrashplay-app",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Tool used to initialize a new Thrashplay node project.",
   "keywords": [
     "code-generator"
@@ -22,7 +22,7 @@
     "url": "github:thrashplay/thrashplay-app-creators"
   },
   "dependencies": {
-    "@thrashplay/github-helpers": "^0.0.0",
+    "@thrashplay/github-helpers": "^0.0.1",
     "app-root-path": "^2.2.1",
     "hygen": "^4.0.9",
     "lodash": "^4.17.15",

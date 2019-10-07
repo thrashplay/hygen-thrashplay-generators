@@ -1,5 +1,5 @@
 ---
-to: <%= projectDir %>/patches/hygen+4.0.9.patchs
+to: <%= projectDir %>/patches/hygen+4.0.9.patch
 ---
 diff --git a/node_modules/hygen/lib/bin.js b/node_modules/hygen/lib/bin.js
 index b6c2892..2e6886d 100644

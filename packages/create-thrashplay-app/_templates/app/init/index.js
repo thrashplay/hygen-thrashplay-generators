@@ -50,6 +50,9 @@ const getDerivedArgs = (args) => {
     throw new Error('no `args` were specified!')
   }
 
+  console.log('Package.json:')
+  console.log(JSON.stringify(require(path.resolve(appRoot.path, 'package.json')), null, '  '))
+
   return {
     createThrashplayAppVersion: getPackageVersion(),
     scriptsDir: path.resolve(appRoot.path, 'dist'),

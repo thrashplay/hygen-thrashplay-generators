@@ -46,6 +46,10 @@ const notEmpty =(value) => {
 }
 
 const getDerivedArgs = (args) => {
+  if (!args) {
+    throw new Error('no `args` were specified!')
+  }
+
   return {
     createThrashplayAppVersion: getPackageVersion(),
     scriptsDir: path.resolve(appRoot.path, 'dist'),

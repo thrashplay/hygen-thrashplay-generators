@@ -1,3 +1,3 @@
 ---
-sh: "cd <%= projectDir %> && lerna bootstrap"
+sh: "cd <%= projectDir %> && yarn bootstrap"
 ---

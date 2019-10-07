@@ -52,7 +52,7 @@ const getDerivedArgs = (args) => {
 
   return {
     createThrashplayAppVersion: getPackageVersion(),
-    scriptsDir: path.resolve(appRoot.path, 'node_modules', 'create-thrashplay-app', 'dist',),
+    createThrashplayAppScriptsDir: path.resolve(appRoot.path, 'node_modules', 'create-thrashplay-app', 'dist'),
     projectDir: path.resolve(process.cwd(), args.name),
     packageName: getPackageName(),
     ...args,

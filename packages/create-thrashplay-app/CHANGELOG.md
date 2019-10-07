@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 0.1.0 (2019-10-07)
+
+
+### Features
+
+* Reboot project to be run as an `npx` command. ([89975e3](https://github.com/thrashplay/thrashplay-app-creators/commit/89975e3))
+
+
+
+
+
 ## [0.3.4](https://github.com/thrashplay/hygen-thrashplay-node-generators/compare/hygen-thrashplay-node-generators@0.3.3...hygen-thrashplay-node-generators@0.3.4) (2019-10-06)
 
 

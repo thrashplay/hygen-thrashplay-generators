@@ -64,12 +64,12 @@ const deleteTemplates = (sourceDir, targetDir) => {
 }
 
 const main = () => {
-    console.log('Uninstalling hygen generators defined by:', process.env.npm_package_name)
+    console.log('Uninstalling Thrashplay templates...')
 
-    const currentDirectory = appRoot.path
+    const appRoot = appRoot.path
 
-    let sourceDir = path.resolve(currentDirectory, 'node_modules', process.env.npm_package_name, 'templates');
-    let targetDir = path.resolve(currentDirectory, '_templates');
+    let sourceDir = path.resolve(__dirname, 'templates');
+    let targetDir = path.resolve(appRoot, '_templates');
     deleteTemplates(sourceDir, targetDir)
     deleteIfEmpty(targetDir)
 }

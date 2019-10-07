@@ -8,7 +8,7 @@ const defaultTemplates = path.resolve(__dirname, '..', '_templates')
 const main = () => {
   runner(['app', 'init'], {
     templates: defaultTemplates,
-    cwd: process.cwd(),
+    cwd: __dirname,
     logger: new Logger(console.log.bind(console)),
     createPrompter: () => require('enquirer'),
     exec: (action, body) => {

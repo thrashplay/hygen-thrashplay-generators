@@ -12,9 +12,14 @@ const getPackageName = () => {
     return nameParts.length > 1 ? nameParts[1] : nameParts[0]
 }
 
+const getPackageVersion = () => {
+    return '^' + fromPackageJson('version')
+}
+
 module.exports = {
     params: ({args}) => {
         return {
+            createThrashplayAppVersion: getPackageVersion(),
             scriptsDir: path.resolve(appRoot.path, 'scripts'),
             projectDir: path.resolve(appRoot.path),
             packageManager: args.packageManager || 'yarn',

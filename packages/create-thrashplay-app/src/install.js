@@ -23,15 +23,15 @@ const addTemplates = (sourceDir, targetDir) => {
 }
 
 const main = () => {
-    console.log('Installing hygen generators defined by:', process.env.npm_package_name)
+    console.log('Installing Thrashplay templates...')
 
-    const currentDirectory = appRoot.path
+    const appRoot = appRoot.path
 
-    let sourceDir = path.resolve(currentDirectory, 'node_modules', process.env.npm_package_name, 'templates');
-    let targetDir = path.resolve(currentDirectory, '_templates');
+    let sourceDir = path.resolve(__dirname, 'templates');
+    let targetDir = path.resolve(appRoot, '_templates');
     addTemplates(sourceDir, targetDir)
 
-    console.log('To remove hygen-thrashplay-node-generators: `uninstall-node-generators`')
+    console.log('To remove Thrashplay tempaltes: `uninstall-thrashplay-templates`')
 }
 
 main()

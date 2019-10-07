@@ -16,6 +16,7 @@ to: <%= projectDir %>/package.json
   },
   "devDependencies": {
     "app-root-path": "^2.2.1",
+    "create-thrashplay-app": "<%= createThrashplayAppVersion %>",
     "hygen": "^4.0.9",
     "lerna": "^3.16.4",
     "patch-package": "^6.2.0"

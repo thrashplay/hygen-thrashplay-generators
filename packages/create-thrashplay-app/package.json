@@ -11,7 +11,9 @@
   "bin": {
     "create-thrashplay-app": "dist/cli.js",
     "fetch-license": "dist/fetch-license.js",
-    "fetch-license-ids": "dist/fetch-license-ids.js"
+    "fetch-license-ids": "dist/fetch-license-ids.js",
+    "install-thrashplay-templates": "dist/install.js",
+    "uninstall-thrashplay-templates": "dist/uninstall.js"
   },
   "scripts": {
     "build": "rm -rf dist && cp -R ../create-thrashplay-app/src dist",

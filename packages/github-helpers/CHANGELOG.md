@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.4](https://github.com/thrashplay/thrashplay-app-creators/compare/@thrashplay/github-helpers@0.0.3...@thrashplay/github-helpers@0.0.4) (2019-10-07)
+
+
+### Bug Fixes
+
+* Add main file declaration. ([f20646d](https://github.com/thrashplay/thrashplay-app-creators/commit/f20646d))
+
+
+
+
+
 ## [0.0.3](https://github.com/thrashplay/thrashplay-app-creators/compare/@thrashplay/github-helpers@0.0.2...@thrashplay/github-helpers@0.0.3) (2019-10-07)
 
 **Note:** Version bump only for package @thrashplay/github-helpers

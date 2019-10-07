@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.5](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-app@0.2.4...create-thrashplay-app@0.2.5) (2019-10-07)
+
+
+### Bug Fixes
+
+* Move license fetchers. ([e1d9fc1](https://github.com/thrashplay/thrashplay-app-creators/commit/e1d9fc1))
+
+
+
+
+
 ## [0.2.4](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-app@0.2.3...create-thrashplay-app@0.2.4) (2019-10-07)
 
 **Note:** Version bump only for package create-thrashplay-app

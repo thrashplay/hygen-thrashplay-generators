@@ -1,5 +1,5 @@
 ---
-to: "<%= cwd %>/lerna.json"
+to: "<%= projectDir %>/lerna.json"
 ---
 {
   "command": {

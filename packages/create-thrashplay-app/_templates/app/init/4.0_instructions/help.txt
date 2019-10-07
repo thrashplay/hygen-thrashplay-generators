@@ -1,0 +1,4 @@
+
+
+To add a new package: `hygen lerna add-package --name <name> [--license <LICENSE>]`
+

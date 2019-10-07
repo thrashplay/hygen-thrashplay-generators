@@ -1,3 +1,7 @@
+const withDefaultArguments = require("../../.lib/thrashplay-common").withDefaultArguments
+
 module.exports = {
-  ...require('../../.lib/thrashplay-common.js')
+  params: (args) => {
+    return withDefaultArguments(args)
+  }
 }

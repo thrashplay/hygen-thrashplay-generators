@@ -4,6 +4,8 @@
   "description": "@thrashplay/sandbox-bootstrap templates",
   "license": "MIT",
   "author": "Sean Kleinjung <sean@thrashplay.com>",
+  "workspaces": ["packages/*"],
+  "private": true,
   "scripts": {
     "bootstrap": "yarn lerna bootstrap",
     "build": "yarn lerna run build",
@@ -16,7 +18,6 @@
     "type": "git",
     "url": "github:thrashplay/hygen-thrashplay-generators"
   },
-  "private": true,
   "dependencies": {},
   "devDependencies": {
     "lerna": "^3.16.4"

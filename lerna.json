@@ -11,6 +11,7 @@
     "**/_templates/**"
   ],
   "npmClient": "yarn",
+  "useWorkspaces": true,
   "packages": [
     "packages/*"
   ],

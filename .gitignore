@@ -65,3 +65,6 @@ typings/
 
 # dist folders
 dist
+
+# npm publish config, created by CI server
+.npmrc

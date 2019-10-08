@@ -1,0 +1,61 @@
+kind: pipeline
+name: default
+
+steps:
+  - name: npm-auth
+    image: robertstettner/drone-npm-auth
+    settings:
+      token:
+        from_secret: Blah
+
+  - name: build
+    image: node:10
+    commands:
+      - yarn
+      - yarn bootstrap
+      - yarn build
+
+  - name: test
+    image: node:10
+    commands:
+      - yarn test
+
+  - name: publish
+    image: node:10
+    environment:
+      GIT_AUTHOR_NAME: "Drone"
+      GIT_AUTHOR_EMAIL: "drone@thrashplay.com"
+      GIT_COMMITTER_NAME: "Drone"
+      GIT_COMMITTER_EMAIL: "drone@thrashplay.com"
+    commands:
+      - yarn release:ci
+
+  - name: notify
+    image: plugins/slack
+    settings:
+      webhook:
+        from_secret: notification-webhook
+      channel: deployments
+      template: |
+        {{#success build.status}}
+          :+1: *BUILD SUCCESS: <https://drone.thrashplay.com/thrashplay/{{repo.name}}/{{build.number}}|#{{build.number}}>*
+        {{else}}
+          :octagonal_sign: *BUILD FAILURE: <https://drone.thrashplay.com/thrashplay/{{repo.name}}/{{build.number}}|#{{build.number}}>*
+        {{/success}}
+
+        Project: *{{repo.name}}*
+        Triggered by: commit to _{{build.branch}}_ (*<https://drone.thrashplay.com/link/thrashplay/{{repo.name}}/commit/{{build.commit}}|{{truncate build.commit 8}}>*)
+
+        ```{{build.message}}```
+    when:
+      status: [ success, failure ]
+
+trigger:
+  branch:
+  - master
+---
+kind: secret
+name: npm-token
+get:
+  path: drone-credentials-npm
+  name: token

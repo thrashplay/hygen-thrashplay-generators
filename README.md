@@ -1,7 +1,8 @@
-[![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lerna.js.org/)
+[![Build Status](https://drone.thrashplay.com/api/badges/thrashplay/thrashplay-app-creators/status.svg)](https://drone.thrashplay.com/thrashplay/thrashplay-app-creators) 
 
-# bootstrap-node-templates
-*TODO*: Enter a project description here.
+# thrashplay-app-creators
+Generator project for monorepo apps using Thrashplay conventions.
 
 ---
-Generated using [sandbox-bootstrap](https://github.com/thrashplay/sandbox-bootstrap).
+[![Generator](https://img.shields.io/badge/Generator-thrashplay--app--creators-blue)](https://github.com/thrashplay/thrashplay-app-creators)
+[![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lerna.js.org/)

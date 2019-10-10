@@ -1,7 +1,7 @@
 [![Build Status](https://drone.thrashplay.com/api/badges/thrashplay/thrashplay-app-creators/status.svg)](https://drone.thrashplay.com/thrashplay/thrashplay-app-creators) 
 
 # thrashplay-app-creators
-Generator project for monorepo apps using Thrashplay conventions.
+Generator project for apps using Thrashplay conventions.
 
 ---
 [![Generator](https://img.shields.io/badge/Generator-thrashplay--app--creators-blue)](https://github.com/thrashplay/thrashplay-app-creators)

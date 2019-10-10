@@ -6,7 +6,7 @@ steps:
     image: robertstettner/drone-npm-auth
     settings:
       token:
-        from_secret: Blah
+        from_secret: NPM_PUBLISH_TOKEN
 
   - name: build
     image: node:10
@@ -23,10 +23,10 @@ steps:
   - name: publish
     image: node:10
     environment:
-      GIT_AUTHOR_NAME: "Drone"
-      GIT_AUTHOR_EMAIL: "drone@thrashplay.com"
-      GIT_COMMITTER_NAME: "Drone"
-      GIT_COMMITTER_EMAIL: "drone@thrashplay.com"
+      GIT_AUTHOR_NAME: Drone
+      GIT_AUTHOR_EMAIL: drone@thrashplay.com
+      GIT_COMMITTER_NAME: Drone
+      GIT_COMMITTER_EMAIL: drone@thrashplay.com
     commands:
       - yarn release:ci
 
@@ -34,7 +34,7 @@ steps:
     image: plugins/slack
     settings:
       webhook:
-        from_secret: notification-webhook
+        from_secret: SLACK_NOTIFICATION_WEBHOOK
       channel: deployments
       template: |
         {{#success build.status}}

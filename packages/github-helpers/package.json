@@ -1,6 +1,6 @@
 {
   "name": "@thrashplay/github-helpers",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Helper methods used by create-thrashplay-app for accessing GitHub APIs.",
   "license": "MIT",
   "author": "Sean Kleinjung <sean@thrashplay.com>",

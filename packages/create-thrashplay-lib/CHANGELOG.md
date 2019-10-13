@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-development.6](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-lib@0.1.0-development.5...create-thrashplay-lib@0.1.0-development.6) (2019-10-13)
+
+
+### Bug Fixes
+
+* move remaining in-project templates to global ones ([142af2d](https://github.com/thrashplay/thrashplay-app-creators/commit/142af2d))
+
+
+
+
+
 # [0.1.0-development.5](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-lib@0.1.0-development.4...create-thrashplay-lib@0.1.0-development.5) (2019-10-13)
 
 

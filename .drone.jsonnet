@@ -25,7 +25,7 @@ local createPipelines(steps) = [
         channel: 'deployments',
 
         startMessage: |||
-          :arrow_forward: Started <https://drone.thrashplay.com/thrashplay/{{repo.name}}/{{build.number}}|{{repo.name}} build #{{build.number}}> on _{{build.branch}}_
+          Started <https://drone.thrashplay.com/thrashplay/{{repo.name}}/{{build.number}}|{{repo.name}} build #{{build.number}}> on _{{build.branch}}_
         |||,
 
         completeMessage: |||
@@ -194,11 +194,12 @@ local __pipelineFactory = {
           image: 'plugins/slack',
           name: 'slack-notify-start',
           settings: {
+            channel: pipelineConfig.notifications.slack.channel,
+            icon_emoji: ':arrow_forward:',
+            template: pipelineConfig.notifications.slack.startMessage,
             webhook: {
               from_secret: pipelineConfig.notifications.slack.webhookSecret,
             },
-            channel: pipelineConfig.notifications.slack.channel,
-            template: pipelineConfig.notifications.slack.startMessage,
           }
         }
       ]

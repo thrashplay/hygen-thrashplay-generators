@@ -8,4 +8,4 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Features
 
-* **create-thrashplay-lib:** rename library to be in Thrashplay namespace. ([0bd904f](https://github.com/thrashplay/thrashplay-app-creators/commit/0bd904f))
+* **@thrashplay/bootstrap-library:** rename library to be in Thrashplay namespace. ([0bd904f](https://github.com/thrashplay/thrashplay-app-creators/commit/0bd904f))

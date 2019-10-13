@@ -4,8 +4,21 @@ const { runner } = require('hygen')
 const Logger = require('hygen/lib/logger')
 const path = require('path')
 const defaultTemplates = path.resolve(__dirname, '..', '_templates')
+const updateNotifier = require('update-notifier');
+const pkg = require('./package.json');
+
+const updateCheck = () => {
+  updateNotifier({
+    distTag: 'alpha',
+    pkg,
+    shouldNotifyInNpmScript: true,
+    updateCheckInterval: 1000 * 60 * 10, // 10 minutes
+  }).notify()
+}
 
 const main = () => {
+  updateCheck()
+
   const arguments = process.argv.length < 3
     ? ['app', 'init']
     : process.argv.slice(2)

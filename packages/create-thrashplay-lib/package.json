@@ -30,7 +30,8 @@
     "app-root-path": "^2.2.1",
     "hygen": "^4.0.9",
     "lodash": "^4.17.15",
-    "ncp": "^2.0.0"
+    "ncp": "^2.0.0",
+    "update-notifier": "^3.0.1"
   },
   "peerDependencies": {
     "hygen": "^4.0.9"

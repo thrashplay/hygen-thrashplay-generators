@@ -35,7 +35,7 @@ local createPipelines(steps) = [
     notifications: {
       slack: {
         webhookSecret: 'SLACK_NOTIFICATION_WEBHOOK',
-        channel: 'deployments',
+        channel: 'automation',
 
         startMessage: |||
           :arrow_forward: Started <https://drone.thrashplay.com/thrashplay/{{repo.name}}/{{build.number}}|{{repo.name}} build #{{build.number}}> on _{{build.branch}}_

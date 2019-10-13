@@ -1,6 +1,7 @@
+const _ = require('lodash')
 const lib = require("../../.lib/thrashplay-common")
 
-const notEmpty =(value) => {
+const notEmpty = (value) => {
   return _.trim(value) !== ''
 }
 

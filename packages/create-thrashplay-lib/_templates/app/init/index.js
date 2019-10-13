@@ -27,7 +27,7 @@ const getLicenses = () => {
       })
 }
 
-const notEmpty =(value) => {
+const notEmpty = (value) => {
   return _.trim(value) !== ''
 }
 

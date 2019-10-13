@@ -17,32 +17,31 @@ local createPipelines(steps) = [
           }
         }
       }),
-
-      steps.custom('slack-notification', {
-        image: 'plugins/slack',
-        settings: {
-          webhook: {
-            from_secret: 'SLACK_NOTIFICATION_WEBHOOK',
-          },
-          channel: 'deployments',
-          template: |||
-            {{#success build.status}}
-              :+1: *<https://drone.thrashplay.com/thrashplay/{{repo.name}}/{{build.number}}|BUILD SUCCESS: #{{build.number}}>*
-            {{else}}
-              :octagonal_sign: *<https://drone.thrashplay.com/thrashplay/{{repo.name}}/{{build.number}}|BUILD FAILURE: #{{build.number}}>*
-            {{/success}}
-
-            Project: *{{repo.name}}*
-            Triggered by: commit to _{{build.branch}}_ (*<https://drone.thrashplay.com/link/thrashplay/{{repo.name}}/commit/{{build.commit}}|{{truncate build.commit 8}}>*)
-
-            ```{{build.message}}```
-          |||
-        },
-        when: {
-          status: [ 'success', 'failure' ]
-        }
-      })
     ],
+
+    notifications: {
+      slack: {
+        webhookSecret: 'SLACK_NOTIFICATION_WEBHOOK',
+        channel: 'deployments',
+
+        startMessage: |||
+          Started <https://drone.thrashplay.com/thrashplay/{{repo.name}}/{{build.number}}|{{repo.name}} build #{{build.number}}> on _{{build.branch}}_
+        |||,
+
+        completeMessage: |||
+          {{#success build.status}}
+            :+1: *<https://drone.thrashplay.com/thrashplay/{{repo.name}}/{{build.number}}|BUILD SUCCESS: #{{build.number}}>*
+          {{else}}
+            :octagonal_sign: *<https://drone.thrashplay.com/thrashplay/{{repo.name}}/{{build.number}}|BUILD FAILURE: #{{build.number}}>*
+          {{/success}}
+
+          Project: *{{repo.name}}*
+          Triggered by: commit to _{{build.branch}}_ (*<https://drone.thrashplay.com/link/thrashplay/{{repo.name}}/commit/{{build.commit}}|{{truncate build.commit 8}}>*)
+
+          ```{{build.message}}```
+        |||
+      },
+    },
 
     trigger: {
       event: {
@@ -188,10 +187,49 @@ local __pipelineFactory = {
 
   withEnvironment(pipelineConfig):: function (step) { environment: pipelineConfig.environment } + step,
 
+  getStartNotificationSteps(pipelineConfig)::
+    if (std.objectHas(pipelineConfig, 'notifications') && std.objectHas(pipelineConfig.notifications, 'slack') && std.objectHas(pipelineConfig.notifications.slack, 'startMessage'))
+      then [
+        {
+          image: 'plugins/slack',
+          name: 'slack-notify-start',
+          settings: {
+            webhook: {
+              from_secret: pipelineConfig.notifications.slack.webhookSecret,
+            },
+            channel: pipelineConfig.notifications.slack.channel,
+            template: pipelineConfig.notifications.slack.startMessage,
+          }
+        }
+      ]
+      else [],
+
+  getEndNotificationSteps(pipelineConfig)::
+    if (std.objectHas(pipelineConfig, 'notifications') && std.objectHas(pipelineConfig.notifications, 'slack') && std.objectHas(pipelineConfig.notifications.slack, 'endMessage'))
+      then [
+        {
+          image: 'plugins/slack',
+          name: 'slack-notify-complete',
+          settings: {
+            webhook: {
+              from_secret: pipelineConfig.notifications.slack.webhookSecret,
+            },
+            channel: pipelineConfig.notifications.slack.channel,
+            template: pipelineConfig.notifications.slack.endMessage,
+          },
+          when: {
+            status: [ 'success', 'failure' ]
+          }
+        }
+      ]
+      else [],
+
   getInitSteps(pipelineConfig)::
+    __pipelineFactory.getStartNotificationSteps(pipelineConfig) +
     [
       __initGitHubStep(pipelineConfig)
-    ] + if std.objectHas(pipelineConfig, 'npmPublish') then
+    ]
+    + if std.objectHas(pipelineConfig, 'npmPublish') then
     [
       {
         name: 'init-npm-auth',
@@ -202,7 +240,8 @@ local __pipelineFactory = {
           }
         },
       }
-    ] else [],
+    ] else []
+    + __pipelineFactory.getEndNotificationSteps(pipelineConfig),
 
   createSteps(pipelineConfig):: function (step)
     std.map(

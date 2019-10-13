@@ -70,23 +70,18 @@ local createPipelines(steps) = [
 
       notifications: {
         slack: {
+          local linkedSha = '*<https://drone.thrashplay.com/link/thrashplay/{{repo.name}}/commit/{{build.commit}}|{{repo.name}}@{{truncate build.commit 8}}>*',
+          local buildNumberString = '(<https://drone.thrashplay.com/thrashplay/{{repo.name}}/{{build.number}}|Build #{{build.number}}>)',
+
           webhookSecret: 'SLACK_NOTIFICATION_WEBHOOK',
           channel: 'automation',
 
-          startMessage: |||
-            ::arrow_up:: Promoting <https://drone.thrashplay.com/thrashplay/{{repo.name}}/{{build.number}}|{{repo.name}} build #{{build.number}}> to _{{build.deployTo}}_.
-          |||,
+          startMessage: '::arrow_up:: Promoting ' + linkedSha + ' to _{{build.deployTo}}_. ' + buildNumberString,
 
-          completeMessage: |||
-            {{#success build.status}}
-              :+1: Successfuly deployed *<https://drone.thrashplay.com/thrashplay/{{repo.name}}/{{build.number}}|{{repo.name}} build #{{build.number}}>* to _{{build.deployTo}}_.
-            {{else}}
-              :octagonal_sign: Failed to deploy *<https://drone.thrashplay.com/thrashplay/{{repo.name}}/{{build.number}}|{{repo.name}} build #{{build.number}}>* to _{{build.deployTo}}_.
-            {{/success}}
-
-            Build message:
-            ```{{build.message}}```
-          |||
+          completeMessage: '{{#success build.status}}:checkered_flag: Successfuly promoted ' + linkedSha + ' to _{{build.deployTo}}_. ' + buildNumberString +
+            '{{else}}' +
+            '  :octagonal_sign: Failed to deploy ' + linkedSha + ' to _{{build.deployTo}}_. ' + buildNumberString +
+            '{{/success}}'
         },
       },
 
@@ -208,7 +203,7 @@ local __publish(publishConfig = {}) = {
           image: pipelineConfig.nodeImage,
           environment: pipelineConfig.environment + { PROMOTED_TO: '${DRONE_DEPLOY_TO}' },
           commands: [
-            ': *** promoting to $${PROMOTED_TO} release',
+            'echo *** promoting to $${PROMOTED_TO} release',
             std.join(' ', ['echo yarn', 'release:graduate']),
           ],
       }] else [])

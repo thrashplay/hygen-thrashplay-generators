@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-development.1](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-lib@0.1.0-development.0...create-thrashplay-lib@0.1.0-development.1) (2019-10-13)
+
+
+### Bug Fixes
+
+* fix logic for skipping CI, and defaulted lerna configuration to 'iterative' mode ([3c76ee6](https://github.com/thrashplay/thrashplay-app-creators/commit/3c76ee6))
+
+
+
+
+
 # [0.1.0-development.0](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-lib@0.1.0-alpha.1...create-thrashplay-lib@0.1.0-development.0) (2019-10-13)
 
 

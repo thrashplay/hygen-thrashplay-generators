@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-development.8](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-lib@0.1.0-development.7...create-thrashplay-lib@0.1.0-development.8) (2019-10-13)
+
+
+### Bug Fixes
+
+* **create-thrashplay-lib:** fix broken path in create-idea-project generator ([7174fa1](https://github.com/thrashplay/thrashplay-app-creators/commit/7174fa1))
+
+
+
+
+
 # [0.1.0-development.7](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-lib@0.1.0-development.5...create-thrashplay-lib@0.1.0-development.7) (2019-10-13)
 
 

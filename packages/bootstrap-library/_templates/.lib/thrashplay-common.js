@@ -10,14 +10,20 @@ const getPackageName = (packageJson) => {
 const parsePackageJson = () => {
   try {
     const packageJsonPath = path.resolve(process.cwd(), 'package.json')
+    console.info('looking for pkg.json:', packageJsonPath)
     if (fs.existsSync(packageJsonPath)) {
       const packageJson = require(packageJsonPath)
+      console.info('thank god')
       return {
         packageLicense: _.get(packageJson, 'license'),
         packageName: getPackageName(packageJson),
       }
+    } else {
+      console.warn('not found')
     }
-  } catch (err) {}
+  } catch (err) {
+    console.error('error:', error)
+  }
   return {}
 }
 

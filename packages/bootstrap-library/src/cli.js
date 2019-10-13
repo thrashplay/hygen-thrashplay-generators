@@ -17,6 +17,7 @@ const updateCheck = () => {
 }
 
 const main = () => {
+  console.info()
   console.info('>>> @thrashplay/bootstrap-library version:', pkg.version)
 
   updateCheck()

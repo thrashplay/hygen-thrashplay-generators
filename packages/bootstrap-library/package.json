@@ -1,7 +1,7 @@
 {
-  "name": "create-thrashplay-lib",
+  "name": "@thrashplay/bootstrap-library",
   "version": "0.1.0-development.9",
-  "description": "Tool used to initialize a new Thrashplay node project.",
+  "description": "Tool used to initialize a new Thrashplay node library.",
   "keywords": [
     "code-generator"
   ],
@@ -9,7 +9,7 @@
   "author": "Sean Kleinjung <sean@thrashplay.com>",
   "main": "dist/cli.js",
   "bin": {
-    "create-thrashplay-lib": "dist/cli.js",
+    "@thrashplay/bootstrap-library": "dist/cli.js",
     "fetch-license": "dist/fetch-license.js",
     "fetch-license-ids": "dist/fetch-license-ids.js"
   },

@@ -17,6 +17,8 @@ const updateCheck = () => {
 }
 
 const main = () => {
+  console.info('>>> @thrashplay/bootstrap-library version:', pkg.version)
+
   updateCheck()
 
   const arguments = process.argv.length < 3

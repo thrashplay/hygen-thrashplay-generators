@@ -1,7 +1,7 @@
 {
-  "name": "hygen-thrashplay-generators",
+  "name": "thrashplay-app-creators",
   "version": "0.1.0",
-  "description": "@thrashplay/sandbox-bootstrap templates",
+  "description": "Bootstrap utilities for Thrashplay projects.",
   "license": "MIT",
   "author": "Sean Kleinjung <sean@thrashplay.com>",
   "workspaces": [
@@ -15,12 +15,12 @@
     "release": "yarn lerna publish --yes --conventional-commits",
     "release:graduate": "yarn release --conventional-graduate",
     "release:pre": "yarn release --conventional-prerelease --preid ${PRERELEASE_ID} --dist-tag ${PRERELEASE_ID}",
-    "template": "cross-env HYGEN_TMPLS=packages/create-thrashplay-lib/_templates yarn hygen",
+    "template": "cross-env HYGEN_TMPLS=packages/bootstrap-library/_templates yarn hygen",
     "test": "yarn lerna run test"
   },
   "repository": {
     "type": "git",
-    "url": "github:thrashplay/hygen-thrashplay-generators"
+    "url": "github:thrashplay/thrashplay-app-creators"
   },
   "dependencies": {},
   "devDependencies": {

@@ -9,9 +9,9 @@ version of a generator is always used.
 
 The following sections describe the types of projects currently supported.
 
-## [create-thrashplay-lib](https://github.com/thrashplay/thrashplay-app-creators/tree/master/packages/create-thrashplay-lib)
+## [@thrashplay/bootstrap-library](https://github.com/thrashplay/thrashplay-app-creators/tree/master/packages/@thrashplay/bootstrap-library)
 
-Quickstart: `npx create-thrashplay-lib`
+Quickstart: `npx @thrashplay/bootstrap-library`
 
 This generator creates a new Typescript library project, structured as a 
 monorepo. It is intended that an organization would have one (or a small number) 

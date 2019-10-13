@@ -1,6 +1,7 @@
 const _ = require('lodash')
-const path = require('path')
 const appRoot = require('app-root-path')
+const fs = require('fs')
+const path = require('path')
 
 const getPackageName = (packageJson) => {
   const nameParts = _.get(packageJson, 'name').split('/')

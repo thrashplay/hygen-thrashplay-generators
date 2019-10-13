@@ -8,18 +8,23 @@ const updateNotifier = require('update-notifier')
 const pkg = require(path.resolve(__dirname, '..', 'package.json'))
 
 const updateCheck = () => {
-  updateNotifier({
+  const notifier = updateNotifier({
     distTag: 'alpha',
     pkg,
     shouldNotifyInNpmScript: true,
     updateCheckInterval: 1000 * 60 * 10, // 10 minutes
-  }).notify()
+  })
+
+  notifier.notify()
+  if (!notifier.update) {
+    // show plain-Jane 'current version' if no updates
+    console.info()
+    console.info('>>> @thrashplay/bootstrap-library version:', pkg.version)
+    console.info()
+  }
 }
 
 const main = () => {
-  console.info()
-  console.info('>>> @thrashplay/bootstrap-library version:', pkg.version)
-
   updateCheck()
 
   const arguments = process.argv.length < 3

@@ -1,34 +1,26 @@
+local createBuildSteps(steps) = [
+  steps.yarn('install', ['install --frozen-lockfile --non-interactive']),
+  steps.yarn('bootstrap'),
+
+  steps.yarn('precheck', ['commitlint:last', 'lint']),
+  steps.yarn('build'),
+
+  steps.yarn('test'),
+];
+
 local createPipelines(steps) = [
   {
-    steps: [
-      steps.yarn('install', ['install --frozen-lockfile --non-interactive']),
-      steps.yarn('bootstrap'),
+    name: 'continuous-integration',
 
-      steps.yarn('precheck', ['commitlint:last', 'lint']),
-      steps.yarn('build'),
-
-      steps.yarn('test'),
-
+    steps: createBuildSteps(steps) + [
       steps.publish({
         tokenSecret: 'NPM_PUBLISH_TOKEN',
         configurations: [
           {
             branches: ['master'],
-            prerelease: 'alpha',
-          },
-          {
-            branches: ['develop'],
-            prerelease: 'qa',
-            canary: true,
-          },
-          {
-            branches: {
-              exclude: ['master', 'develop'],
-            },
-            prerelease: 'unstable',
-            canary: true,
-          },
-        ],
+            prerelease: 'next',
+          }
+        ]
       }),
     ],
 
@@ -62,6 +54,48 @@ local createPipelines(steps) = [
       }
     }
   },
+  {
+      name: 'promote-build',
+
+      steps: createBuildSteps(steps) + [
+        steps.publish({
+          tokenSecret: 'NPM_PUBLISH_TOKEN',
+          promotion: {
+            allowedBranches: ['master'],
+            extraDistTags: ['latest'],
+            scriptName: 'release:graduate',
+          },
+        }),
+      ],
+
+      notifications: {
+        slack: {
+          webhookSecret: 'SLACK_NOTIFICATION_WEBHOOK',
+          channel: 'automation',
+
+          startMessage: |||
+            ::arrow_up:: Promoting <https://drone.thrashplay.com/thrashplay/{{repo.name}}/{{build.number}}|{{repo.name}} build #{{build.number}}> to _{{build.deployTo}}_.
+          |||,
+
+          completeMessage: |||
+            {{#success build.status}}
+              :+1: Successfuly deployed *<https://drone.thrashplay.com/thrashplay/{{repo.name}}/{{build.number}}|{{repo.name}} build #{{build.number}}>* to _{{build.deployTo}}_.
+            {{else}}
+              :octagonal_sign: Failed to deploy *<https://drone.thrashplay.com/thrashplay/{{repo.name}}/{{build.number}}|{{repo.name}} build #{{build.number}}>* to _{{build.deployTo}}_.
+            {{/success}}
+
+            Build message:
+            ```{{build.message}}```
+          |||
+        },
+      },
+
+      trigger: {
+        event: {
+          include: ['promote'],
+        }
+      }
+    },
 ];
 
 // !!! BEGIN AUTO-GENERATED CONFIGURATION !!!
@@ -162,12 +196,22 @@ local __publish(publishConfig = {}) = {
         },
       },
     ] else []) +
-    if std.objectHas(publishConfig, 'configurations')
+    (if std.objectHas(publishConfig, 'configurations')
       then std.map(__createPublishStep(
         pipelineConfig.nodeImage,
         baseStepName,
         publishConfig), publishConfig.configurations)
-      else []
+      else []) +
+    (if std.objectHas(publishConfig, 'promotion')
+      then [{
+        name: std.join('-', ['promote', '${DRONE_DEPLOY_TO}']),
+          image: pipelineConfig.nodeImage,
+          environment: pipelineConfig.environment + { PROMOTED_TO: '${DRONE_DEPLOY_TO}' },
+          commands: [
+            ': *** promoting to $${PROMOTED_TO} release',
+            std.join(' ', ['echo yarn', 'release:graduate']),
+          ],
+      }] else [])
 };
 
 local __pipelineFactory = {
@@ -226,19 +270,7 @@ local __pipelineFactory = {
     __pipelineFactory.getStartNotificationSteps(pipelineConfig) +
     [
       __initGitHubStep(pipelineConfig)
-    ]
-    + if std.objectHas(pipelineConfig, 'npmPublish') then
-    [
-      {
-        name: 'init-npm-auth',
-        image: 'robertstettner/drone-npm-auth',
-        settings: {
-          token: {
-            from_secret: pipelineConfig.npmPublish.tokenSecret,
-          }
-        },
-      }
-    ] else [],
+    ],
 
   createSteps(pipelineConfig):: function (step)
     std.map(

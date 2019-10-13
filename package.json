@@ -46,7 +46,7 @@
     "commitlint:last": "yarn commitlint --verbose --from HEAD~1 --to HEAD",
     "lint": "echo No files in project to lint!",
     "release": "yarn lerna publish --yes",
-    "release:graduate": "yarn release --conventional-graduate",
+    "release:graduate": "yarn release --conventional-graduate --dist-tag ${PRERELEASE_ID}",
     "release:pre": "yarn release --conventional-prerelease --preid ${PRERELEASE_ID} --dist-tag ${PRERELEASE_ID}",
     "template": "cross-env HYGEN_TMPLS=packages/bootstrap-library/_templates yarn hygen",
     "test": "echo No files in project to test!"

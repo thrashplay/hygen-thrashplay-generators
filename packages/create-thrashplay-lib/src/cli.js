@@ -6,7 +6,11 @@ const path = require('path')
 const defaultTemplates = path.resolve(__dirname, '..', '_templates')
 
 const main = () => {
-  runner(['app', 'init'], {
+  const arguments = process.argv.length < 3
+    ? ['app', 'init']
+    : process.argv.slice(2)
+
+  runner(arguments, {
     templates: defaultTemplates,
     cwd: __dirname,
     logger: new Logger(console.log.bind(console)),
@@ -21,4 +25,4 @@ const main = () => {
   })
 }
 
-main()
+main(process.argv)

@@ -5,7 +5,7 @@ to: "<%= projectDir %>/lerna.json"
   "command": {
     "version": {
       "allowBranch": ["master", "develop"],
-      "message": "chore(release): publish latest versions [CI SKIP]"
+      "message": "chore(release): publish latest versions [ci skip]"
     }
   },
   "ignore-changes": [

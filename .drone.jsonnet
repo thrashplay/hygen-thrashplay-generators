@@ -240,8 +240,7 @@ local __pipelineFactory = {
           }
         },
       }
-    ] else []
-    + __pipelineFactory.getCompleteNotificationSteps(pipelineConfig),
+    ] else [],
 
   createSteps(pipelineConfig):: function (step)
     std.map(
@@ -255,7 +254,8 @@ local __pipelineFactory = {
     name: config.name,
     steps:
       __pipelineFactory.getInitSteps(config) +
-      std.flattenArrays(std.map(__pipelineFactory.createSteps(config), config.steps)),
+      std.flattenArrays(std.map(__pipelineFactory.createSteps(config), config.steps)) +
+      __pipelineFactory.getCompleteNotificationSteps(config),
     trigger: config.trigger,
   },
 };

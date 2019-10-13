@@ -25,7 +25,7 @@ local createPipelines(steps) = [
         channel: 'deployments',
 
         startMessage: |||
-          Started <https://drone.thrashplay.com/thrashplay/{{repo.name}}/{{build.number}}|{{repo.name}} build #{{build.number}}> on _{{build.branch}}_
+          :arrow_forward: Started <https://drone.thrashplay.com/thrashplay/{{repo.name}}/{{build.number}}|{{repo.name}} build #{{build.number}}> on _{{build.branch}}_
         |||,
 
         completeMessage: |||
@@ -204,8 +204,8 @@ local __pipelineFactory = {
       ]
       else [],
 
-  getEndNotificationSteps(pipelineConfig)::
-    if (std.objectHas(pipelineConfig, 'notifications') && std.objectHas(pipelineConfig.notifications, 'slack') && std.objectHas(pipelineConfig.notifications.slack, 'endMessage'))
+  getCompleteNotificationSteps(pipelineConfig)::
+    if (std.objectHas(pipelineConfig, 'notifications') && std.objectHas(pipelineConfig.notifications, 'slack') && std.objectHas(pipelineConfig.notifications.slack, 'completeMessage'))
       then [
         {
           image: 'plugins/slack',
@@ -215,7 +215,7 @@ local __pipelineFactory = {
               from_secret: pipelineConfig.notifications.slack.webhookSecret,
             },
             channel: pipelineConfig.notifications.slack.channel,
-            template: pipelineConfig.notifications.slack.endMessage,
+            template: pipelineConfig.notifications.slack.completeMessage,
           },
           when: {
             status: [ 'success', 'failure' ]
@@ -241,7 +241,7 @@ local __pipelineFactory = {
         },
       }
     ] else []
-    + __pipelineFactory.getEndNotificationSteps(pipelineConfig),
+    + __pipelineFactory.getCompleteNotificationSteps(pipelineConfig),
 
   createSteps(pipelineConfig):: function (step)
     std.map(

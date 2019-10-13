@@ -20,7 +20,6 @@ const updateCheck = () => {
     // show plain-Jane 'current version' if no updates
     console.info()
     console.info('>>> @thrashplay/bootstrap-library version:', pkg.version)
-    console.info()
   }
 }
 

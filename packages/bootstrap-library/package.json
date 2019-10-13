@@ -31,7 +31,6 @@
     "update-notifier": "^3.0.1"
   },
   "peerDependencies": {
-    "hygen": "^4.0.9"
   },
   "gitHead": "27c768c29d9101bacf89d07625c47d297a8eafcc"
 }

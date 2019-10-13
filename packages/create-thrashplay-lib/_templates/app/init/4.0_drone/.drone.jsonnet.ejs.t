@@ -13,7 +13,8 @@ local createPipelines(steps) = [
       steps.publish({
         tokenSecret: 'NPM_PUBLISH_TOKEN',
         prereleases: {
-          alpha: ['develop'],
+          alpha: ['master'],
+          development: ['develop'],
         }
       }),
     ]

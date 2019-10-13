@@ -4,8 +4,8 @@ const { runner } = require('hygen')
 const Logger = require('hygen/lib/logger')
 const path = require('path')
 const defaultTemplates = path.resolve(__dirname, '..', '_templates')
-const updateNotifier = require('update-notifier');
-const pkg = require('./package.json');
+const updateNotifier = require('update-notifier')
+const pkg = require(path.resolve(__dirname, '..', 'package.json'))
 
 const updateCheck = () => {
   updateNotifier({

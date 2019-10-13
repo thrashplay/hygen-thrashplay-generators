@@ -39,7 +39,13 @@ local createPipelines(steps) = [
           status: [ 'success', 'failure' ]
         }
       })
-    ]
+    ],
+
+    trigger: {
+      event: {
+        include: ['push'],
+      }
+    }
   },
 ];
 
@@ -174,6 +180,7 @@ local __pipelineFactory = {
     name: if std.objectHas(configuration, 'name') then configuration.name else 'default',
     nodeImage: if std.objectHas(configuration, 'nodeImage') then configuration.nodeImage else 'node:lts',
     steps: if std.objectHas(configuration, 'steps') then configuration.steps else [],
+    trigger: if std.objectHas(configuration, 'trigger') then configuration.trigger else {},
   },
 
   withEnvironment(pipelineConfig):: function (step) { environment: pipelineConfig.environment } + step,
@@ -207,6 +214,7 @@ local __pipelineFactory = {
     steps:
       __pipelineFactory.getInitSteps(config) +
       std.flattenArrays(std.map(__pipelineFactory.createSteps(config), config.steps)),
+    trigger: config.trigger,
   },
 };
 

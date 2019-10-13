@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-development.14](https://github.com/thrashplay/thrashplay-app-creators/compare/@thrashplay/bootstrap-library@0.1.0-development.13...@thrashplay/bootstrap-library@0.1.0-development.14) (2019-10-13)
+
+
+### Bug Fixes
+
+* **create-thrashplay-lib:** correct path to missing package.json ([9ad0cf5](https://github.com/thrashplay/thrashplay-app-creators/commit/9ad0cf5))
+
+
+
+
+
 # [0.1.0-development.13](https://github.com/thrashplay/thrashplay-app-creators/compare/@thrashplay/bootstrap-library@0.1.0-development.12...@thrashplay/bootstrap-library@0.1.0-development.13) (2019-10-13)
 
 

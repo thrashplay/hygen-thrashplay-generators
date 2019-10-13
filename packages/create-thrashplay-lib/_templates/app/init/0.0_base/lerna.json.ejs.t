@@ -4,8 +4,8 @@ to: "<%= projectDir %>/lerna.json"
 {
   "command": {
     "version": {
-      "allowBranch": "master",
-      "message": "chore(release): publish latest versions"
+      "allowBranch": ["master", "develop"],
+      "message": "chore(release): publish latest versions [SKIP CI]"
     }
   },
   "ignore-changes": [
@@ -13,6 +13,8 @@ to: "<%= projectDir %>/lerna.json"
     "**/*.test.ts",
     "**/_templates/**"
   ],
+  "npmClient": "yarn",
+  "useWorkspaces": true,
   "packages": [
     "packages/*"
   ],

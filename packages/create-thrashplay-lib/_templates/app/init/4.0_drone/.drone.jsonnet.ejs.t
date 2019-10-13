@@ -14,9 +14,6 @@ local createPipelines(steps) = [
         tokenSecret: 'NPM_PUBLISH_TOKEN',
         prereleases: {
           alpha: ['develop'],
-          preview: {
-            exclude: ['master', 'develop']
-          }
         }
       }),
     ]

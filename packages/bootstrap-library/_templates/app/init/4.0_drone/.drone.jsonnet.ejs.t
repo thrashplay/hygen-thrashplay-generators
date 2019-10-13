@@ -95,7 +95,7 @@ local __custom(name, config = {}) = {
   ],
 };
 
-local __createCommand(script) = std.join(' ', ['echo', 'yarn', script]);
+local __createCommand(script) = std.join(' ', ['yarn', script]);
 local __yarn(name, scripts = [name], config = {}) = {
   builder: function (pipelineConfig) [
     config + {
@@ -107,10 +107,20 @@ local __yarn(name, scripts = [name], config = {}) = {
 };
 
 local __createPublishStep(image, baseStepName, publishConfig, environment = {}) = function(publish) {
+  local prereleaseScriptName =
+    if std.objectHas(publishConfig, 'prereleaseScriptName')
+    then publishConfig.prereleaseScriptName
+    else 'release:pre',
+
+  local releaseScriptName =
+    if std.objectHas(publishConfig, 'releaseScriptName')
+    then publishConfig.releaseScriptName
+    else 'release:graduate',
+
   local releaseName = if std.objectHas(publish, 'prerelease') then publish.prerelease else 'production',
   local scriptName = if std.objectHas(publish, 'prerelease')
-    then publishConfig.prereleaseScriptName
-    else publishConfig.releaseScriptName,
+    then prereleaseScriptName
+    else releaseScriptName,
   local isCanary = std.objectHas(publish, 'canary') && publish.canary,
 
   name: std.join('-', [baseStepName, releaseName]),
@@ -118,7 +128,7 @@ local __createPublishStep(image, baseStepName, publishConfig, environment = {}) 
   environment: environment + if std.objectHas(publish, 'prerelease') then { PRERELEASE_ID: publish.prerelease } else {},
   commands: [
     ': *** publishing: ' + releaseName,
-    std.join(' ', ['echo', 'yarn', scriptName, if isCanary then '--canary']),
+    std.join(' ', ['yarn', scriptName, if isCanary then '--canary']),
   ],
   when: {
     branch: publish.branches,
@@ -134,21 +144,6 @@ local __publish(publishConfig = {}) = {
     if std.objectHas(publishConfig, 'tokenSecret')
     then publishConfig.tokenSecret
     else 'NPM_PUBLISH_TOKEN',
-
-  local prereleaseScriptName =
-    if std.objectHas(publishConfig, 'prereleaseScriptName')
-    then publishConfig.prereleaseScriptName
-    else 'release:pre',
-
-  local releaseScriptName =
-    if std.objectHas(publishConfig, 'releaseScriptName')
-    then publishConfig.releaseScriptName
-    else 'release:graduate',
-
-  local releaseBranch =
-    if std.objectHas(publishConfig, 'branch')
-    then publishConfig.branch
-    else 'master',
 
   builder: function (pipelineConfig)
     (if std.objectHas(publishConfig, 'configurations') then [

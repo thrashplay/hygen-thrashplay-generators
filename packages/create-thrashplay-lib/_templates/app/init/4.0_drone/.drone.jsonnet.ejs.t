@@ -15,6 +15,9 @@ local createPipelines(steps) = [
         prereleases: {
           alpha: ['master'],
           development: ['develop'],
+          unstable: {
+            exclude: ['master', 'develop']
+          }
         }
       }),
     ]

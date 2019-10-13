@@ -5,6 +5,9 @@ to: <%= projectDir %>/package.json
   "name": "<%= name %>",
   "version": "0.0.0",
   "description": "<%= description %>",
+  "workspaces": [
+    "packages/*"
+  ],
   "private": true,
   "scripts": {
     "bootstrap": "yarn lerna bootstrap",

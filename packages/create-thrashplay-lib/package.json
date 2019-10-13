@@ -1,6 +1,6 @@
 {
   "name": "create-thrashplay-lib",
-  "version": "0.1.0-development.5",
+  "version": "0.1.0-development.6",
   "description": "Tool used to initialize a new Thrashplay node project.",
   "keywords": [
     "code-generator"
@@ -11,9 +11,7 @@
   "bin": {
     "create-thrashplay-lib": "dist/cli.js",
     "fetch-license": "dist/fetch-license.js",
-    "fetch-license-ids": "dist/fetch-license-ids.js",
-    "install-thrashplay-templates": "dist/install.js",
-    "uninstall-thrashplay-templates": "dist/uninstall.js"
+    "fetch-license-ids": "dist/fetch-license-ids.js"
   },
   "scripts": {
     "build": "rm -rf dist && cp -R src dist",

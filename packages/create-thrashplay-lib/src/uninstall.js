@@ -1,5 +1,9 @@
 #!/usr/bin/env node
 
+/////////////////////////
+// deprecated
+/////////////////////////
+
 const _ = require('lodash')
 const fs = require('fs')
 

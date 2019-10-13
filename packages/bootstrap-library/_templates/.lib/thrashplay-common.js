@@ -22,7 +22,7 @@ const parsePackageJson = () => {
       console.warn('not found')
     }
   } catch (err) {
-    console.error('error:', error)
+    console.error('error:', err)
   }
   return {}
 }

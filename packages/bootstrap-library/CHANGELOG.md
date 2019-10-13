@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-development.12](https://github.com/thrashplay/thrashplay-app-creators/compare/@thrashplay/bootstrap-library@0.1.0-development.11...@thrashplay/bootstrap-library@0.1.0-development.12) (2019-10-13)
+
+
+### Bug Fixes
+
+* **create-thrashplay-lib:** correct bin path for npx usage ([e895f02](https://github.com/thrashplay/thrashplay-app-creators/commit/e895f02))
+
+
+
+
+
 # [0.1.0-development.11](https://github.com/thrashplay/thrashplay-app-creators/compare/@thrashplay/bootstrap-library@0.1.0-development.10...@thrashplay/bootstrap-library@0.1.0-development.11) (2019-10-13)
 
 

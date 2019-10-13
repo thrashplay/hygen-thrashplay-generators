@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.2.0-alpha.0](https://github.com/thrashplay/thrashplay-app-creators/compare/@thrashplay/github-helpers@0.1.5...@thrashplay/github-helpers@0.2.0-alpha.0) (2019-10-13)
+
+
+### Bug Fixes
+
+* **create-thrashplay-lib:** update template paths and add initial Drone support ([cf35c1d](https://github.com/thrashplay/thrashplay-app-creators/commit/cf35c1d))
+
+
+
+
+
 ## [0.1.5](https://github.com/thrashplay/thrashplay-app-creators/compare/@thrashplay/github-helpers@0.1.2...@thrashplay/github-helpers@0.1.5) (2019-10-10)
 
 **Note:** Version bump only for package @thrashplay/github-helpers

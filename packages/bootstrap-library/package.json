@@ -1,6 +1,6 @@
 {
   "name": "@thrashplay/bootstrap-library",
-  "version": "0.1.0-development.18",
+  "version": "0.1.0-development.19",
   "description": "Tool used to initialize a new Thrashplay node project.",
   "keywords": [
     "code-generator"

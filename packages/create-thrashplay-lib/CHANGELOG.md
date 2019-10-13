@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-development.10](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-lib@0.1.0-development.9...create-thrashplay-lib@0.1.0-development.10) (2019-10-13)
+
+
+### Bug Fixes
+
+* **create-thrashplay-lib:** add missing description ([afacdc4](https://github.com/thrashplay/thrashplay-app-creators/commit/afacdc4))
+
+
+### Features
+
+* **create-thrashplay-lib:** add update checking to create-thrashplay-lib ([80eac13](https://github.com/thrashplay/thrashplay-app-creators/commit/80eac13))
+
+
+
+
+
 # [0.1.0-development.9](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-lib@0.1.0-development.8...create-thrashplay-lib@0.1.0-development.9) (2019-10-13)
 
 

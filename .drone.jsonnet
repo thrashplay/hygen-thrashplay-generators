@@ -201,10 +201,10 @@ local __publish(publishConfig = {}) = {
       then [{
         name: std.join('-', ['promote', '${DRONE_DEPLOY_TO}']),
           image: pipelineConfig.nodeImage,
-          environment: pipelineConfig.environment + { PROMOTED_TO: '${DRONE_DEPLOY_TO}' },
+          environment: pipelineConfig.environment + { RELEASE_TYPE: '${DRONE_DEPLOY_TO}' },
           commands: [
-            'echo *** promoting to $${PROMOTED_TO} release',
-            std.join(' ', ['echo yarn', 'release:graduate']),
+            ': *** promoting release',
+            std.join(' ', ['yarn', 'release:graduate']),
           ],
       }] else [])
 };

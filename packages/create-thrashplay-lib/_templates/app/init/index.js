@@ -1,21 +1,7 @@
 const _ = require('lodash')
 const path = require('path')
-const appRoot = require('app-root-path')
 const github = require('@thrashplay/github-helpers')
-const packageJson = require('../../../package.json');
-
-const fromPackageJson = (path) => {
-  return _.get(packageJson, path)
-}
-
-const getPackageName = () => {
-  const nameParts = fromPackageJson('name').split('/')
-  return nameParts.length > 1 ? nameParts[1] : nameParts[0]
-}
-
-const getPackageVersion = () => {
-  return '^' + fromPackageJson('version')
-}
+const lib = require("../../.lib/thrashplay-common")
 
 const getLicenses = () => {
   return github.get('/licenses')
@@ -51,12 +37,9 @@ const getDerivedArgs = (args) => {
   }
 
   return {
-    createThrashplayLibVersion: getPackageVersion(),
-    createThrashplayLibScriptsDir: path.resolve(appRoot.path, 'node_modules', 'create-thrashplay-lib', 'dist'),
+    ...lib.withDefaultArguments(args),
+    // this generator _creates_ the project dir, so it's not the cwd -- but one lower
     projectDir: path.resolve(process.cwd(), args.name),
-    packageName: getPackageName(),
-    ...args,
-    templateSourceDir: path.resolve(appRoot.path, 'node_modules', 'create-thrashplay-lib', 'dist', 'templates'),
   }
 }
 

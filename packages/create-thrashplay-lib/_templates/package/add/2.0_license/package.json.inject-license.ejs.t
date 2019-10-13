@@ -5,4 +5,4 @@ before: dependencies
 skip_if: "license"
 eof_last: "false"
 ---
-<%_ if (license) { %>  "license": "<%= license %>",<% } -%>
+<%_ if (packageLicense) { %>  "license": "<%= packageLicense %>",<% } -%>

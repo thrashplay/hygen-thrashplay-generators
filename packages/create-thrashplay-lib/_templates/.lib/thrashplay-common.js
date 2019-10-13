@@ -22,8 +22,8 @@ module.exports = {
   withDefaultArguments: (args) => _.merge({}, args, {
     createThrashplayLibVersion: getPackageVersion(),
     createThrashplayLibScriptsDir: path.resolve(appRoot.path, 'node_modules', 'create-thrashplay-lib', 'dist'),
-    getPackageLicense: () => fromPackageJson('license'),
     projectDir: path.resolve(process.cwd()),
+    packageLicense: fromPackageJson('license'),
     packageName: getPackageName(),
     ...args,
     templateSourceDir: path.resolve(appRoot.path, 'node_modules', 'create-thrashplay-lib', 'dist', 'templates'),

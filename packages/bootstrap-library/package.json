@@ -1,0 +1,37 @@
+{
+  "name": "@thrashplay/bootstrap-library",
+  "version": "0.1.0-development.19",
+  "description": "Tool used to initialize a new Thrashplay node project.",
+  "keywords": [
+    "code-generator"
+  ],
+  "license": "MIT",
+  "author": "Sean Kleinjung <sean@thrashplay.com>",
+  "bin": "dist/cli.js",
+  "scripts": {
+    "build": "rm -rf dist && cp -R src dist",
+    "clean": "rm -rf dist",
+    "fetch-license": "node dist/fetch-license.js",
+    "fetch-license-ids": "dist/fetch-license-ids.js",
+    "test": "echo No test script defined."
+  },
+  "repository": {
+    "type": "git",
+    "url": "github:thrashplay/thrashplay-app-creators"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@thrashplay/github-helpers": "^0.1.4",
+    "app-root-path": "^2.2.1",
+    "hygen": "^4.0.9",
+    "lodash": "^4.17.15",
+    "ncp": "^2.0.0",
+    "update-notifier": "^3.0.1"
+  },
+  "peerDependencies": {
+    "hygen": "^4.0.9"
+  },
+  "gitHead": "27c768c29d9101bacf89d07625c47d297a8eafcc"
+}

@@ -1,9 +1,10 @@
+---
+to: <%= projectDir %>/package.json
+---
 {
-  "name": "thrashplay-app-creators",
-  "version": "0.1.0",
-  "description": "Bootstrap utilities for Thrashplay projects.",
-  "license": "MIT",
-  "author": "Sean Kleinjung <sean@thrashplay.com>",
+  "name": "<%= name %>",
+  "version": "0.0.0",
+  "description": "<%= description %>",
   "workspaces": [
     "packages/*"
   ],
@@ -15,16 +16,14 @@
     "release": "yarn lerna publish --yes --conventional-commits",
     "release:graduate": "yarn release --conventional-graduate",
     "release:pre": "yarn release --conventional-prerelease --preid ${PRERELEASE_ID} --dist-tag ${PRERELEASE_ID}",
-    "template": "cross-env HYGEN_TMPLS=packages/bootstrap-library/_templates yarn hygen",
     "test": "yarn lerna run test"
   },
-  "repository": {
-    "type": "git",
-    "url": "github:thrashplay/thrashplay-app-creators"
+  "dependencies": {
   },
-  "dependencies": {},
   "devDependencies": {
-    "cross-env": "^6.0.3",
-    "lerna": "^3.16.4"
+    "app-root-path": "^2.2.1",
+    "hygen": "^4.0.9",
+    "lerna": "^3.16.4",
+    "patch-package": "^6.2.0"
   }
 }

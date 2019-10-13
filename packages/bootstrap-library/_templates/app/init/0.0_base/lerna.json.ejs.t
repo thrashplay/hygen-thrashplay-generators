@@ -1,3 +1,6 @@
+---
+to: "<%= projectDir %>/lerna.json"
+---
 {
   "command": {
     "version": {

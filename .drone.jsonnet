@@ -110,10 +110,20 @@ local __yarn(name, scripts = [name], config = {}) = {
 };
 
 local __createPublishStep(image, baseStepName, publishConfig, environment = {}) = function(publish) {
+  local prereleaseScriptName =
+    if std.objectHas(publishConfig, 'prereleaseScriptName')
+    then publishConfig.prereleaseScriptName
+    else 'release:pre',
+
+  local releaseScriptName =
+    if std.objectHas(publishConfig, 'releaseScriptName')
+    then publishConfig.releaseScriptName
+    else 'release:graduate',
+
   local releaseName = if std.objectHas(publish, 'prerelease') then publish.prerelease else 'production',
   local scriptName = if std.objectHas(publish, 'prerelease')
-    then publishConfig.prereleaseScriptName
-    else publishConfig.releaseScriptName,
+    then prereleaseScriptName
+    else releaseScriptName,
   local isCanary = std.objectHas(publish, 'canary') && publish.canary,
 
   name: std.join('-', [baseStepName, releaseName]),
@@ -137,21 +147,6 @@ local __publish(publishConfig = {}) = {
     if std.objectHas(publishConfig, 'tokenSecret')
     then publishConfig.tokenSecret
     else 'NPM_PUBLISH_TOKEN',
-
-  local prereleaseScriptName =
-    if std.objectHas(publishConfig, 'prereleaseScriptName')
-    then publishConfig.prereleaseScriptName
-    else 'release:pre',
-
-  local releaseScriptName =
-    if std.objectHas(publishConfig, 'releaseScriptName')
-    then publishConfig.releaseScriptName
-    else 'release:graduate',
-
-  local releaseBranch =
-    if std.objectHas(publishConfig, 'branch')
-    then publishConfig.branch
-    else 'master',
 
   builder: function (pipelineConfig)
     (if std.objectHas(publishConfig, 'configurations') then [

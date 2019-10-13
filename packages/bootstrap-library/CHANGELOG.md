@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-development.0](https://github.com/thrashplay/thrashplay-app-creators/compare/@thrashplay/bootstrap-library@0.1.0-alpha.0...@thrashplay/bootstrap-library@0.1.0-development.0) (2019-10-13)
+
+**Note:** Version bump only for package @thrashplay/bootstrap-library
+
+
+
+
+
 # 0.1.0-alpha.0 (2019-10-13)
 
 **Note:** Version bump only for package @thrashplay/bootstrap-library

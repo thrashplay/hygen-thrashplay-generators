@@ -2,27 +2,40 @@ local createPipelines(steps) = [
   {
     steps: [
       steps.yarn('install', ['install --frozen-lockfile --non-interactive']),
-
       steps.yarn('bootstrap'),
+
+      steps.yarn('precheck', ['commitlint:last', 'lint']),
       steps.yarn('build'),
+
       steps.yarn('test'),
 
       steps.publish({
         tokenSecret: 'NPM_PUBLISH_TOKEN',
-        prereleases: {
-          alpha: ['master'],
-          development: ['develop'],
-          unstable: {
-            exclude: ['master', 'develop']
-          }
-        }
+        configurations: [
+          {
+            branches: ['master'],
+            prerelease: 'alpha',
+          },
+          {
+            branches: ['develop'],
+            prerelease: 'qa',
+            canary: true,
+          },
+          {
+            branches: {
+              exclude: ['master', 'develop'],
+            },
+            prerelease: 'unstable',
+            canary: true,
+          },
+        ],
       }),
     ],
 
     notifications: {
       slack: {
         webhookSecret: 'SLACK_NOTIFICATION_WEBHOOK',
-        channel: 'deployments',
+        channel: 'automation',
 
         startMessage: |||
           :arrow_forward: Started <https://drone.thrashplay.com/thrashplay/{{repo.name}}/{{build.number}}|{{repo.name}} build #{{build.number}}> on _{{build.branch}}_
@@ -98,28 +111,32 @@ local __yarn(name, scripts = [name], config = {}) = {
   ],
 };
 
-local __createReleaseStep(image, baseStepName, stepName, scriptName, branch, environment = {}) = {
-  name: std.join('-', [baseStepName, stepName]),
+local __createPublishStep(image, baseStepName, publishConfig, environment = {}) = function(publish) {
+  local prereleaseScriptName =
+    if std.objectHas(publishConfig, 'prereleaseScriptName')
+    then publishConfig.prereleaseScriptName
+    else 'release:pre',
+
+  local releaseScriptName =
+    if std.objectHas(publishConfig, 'releaseScriptName')
+    then publishConfig.releaseScriptName
+    else 'release:graduate',
+
+  local releaseName = if std.objectHas(publish, 'prerelease') then publish.prerelease else 'production',
+  local scriptName = if std.objectHas(publish, 'prerelease')
+    then prereleaseScriptName
+    else releaseScriptName,
+  local isCanary = std.objectHas(publish, 'canary') && publish.canary,
+
+  name: std.join('-', [baseStepName, releaseName]),
   image: image,
-  environment: environment,
+  environment: environment + if std.objectHas(publish, 'prerelease') then { PRERELEASE_ID: publish.prerelease } else {},
   commands: [
-    ': *** publishing release',
-    std.join(' ', ['yarn', scriptName]),
+    ': *** publishing: ' + releaseName,
+    std.join(' ', ['yarn', scriptName, if isCanary then '--canary']),
   ],
   when: {
-    branch: [branch]
-  }
-};
-local __createPrereleaseStep(prereleaseConfig, image, baseStepName, scriptName, environment = {}) = function(prereleaseName) {
-  name: std.join('-', [baseStepName, 'prerelease', prereleaseName]),
-  image: image,
-  environment: environment + { PRERELEASE_ID: prereleaseName },
-  commands: [
-    ': *** publishing pre-release: ' + prereleaseName,
-    std.join(' ', ['yarn', scriptName]),
-  ],
-  when: {
-    branch: prereleaseConfig[prereleaseName]
+    branch: publish.branches,
   }
 };
 local __publish(publishConfig = {}) = {
@@ -133,23 +150,8 @@ local __publish(publishConfig = {}) = {
     then publishConfig.tokenSecret
     else 'NPM_PUBLISH_TOKEN',
 
-  local prereleaseScriptName =
-    if std.objectHas(publishConfig, 'prereleaseScriptName')
-    then publishConfig.prereleaseScriptName
-    else 'release:pre',
-
-  local releaseScriptName =
-    if std.objectHas(publishConfig, 'releaseScriptName')
-    then publishConfig.releaseScriptName
-    else 'release:graduate',
-
-  local releaseBranch =
-    if std.objectHas(publishConfig, 'branch')
-    then publishConfig.branch
-    else 'master',
-
   builder: function (pipelineConfig)
-    [
+    (if std.objectHas(publishConfig, 'configurations') then [
       {
         name: std.join('-', [baseStepName, 'npm-auth']),
         image: 'robertstettner/drone-npm-auth',
@@ -159,16 +161,12 @@ local __publish(publishConfig = {}) = {
           }
         },
       },
-    ] +
-    if std.objectHas(publishConfig, 'branch')
-      then [__createReleaseStep(pipelineConfig.nodeImage, baseStepName, 'release', releaseScriptName, releaseBranch)]
-      else [] +
-    if std.objectHas(publishConfig, 'prereleases')
-      then std.map(__createPrereleaseStep(
-        publishConfig.prereleases,
+    ] else []) +
+    if std.objectHas(publishConfig, 'configurations')
+      then std.map(__createPublishStep(
         pipelineConfig.nodeImage,
         baseStepName,
-        prereleaseScriptName), std.objectFields(publishConfig.prereleases))
+        publishConfig), publishConfig.configurations)
       else []
 };
 

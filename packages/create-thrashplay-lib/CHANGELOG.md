@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-development.5](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-lib@0.1.0-development.4...create-thrashplay-lib@0.1.0-development.5) (2019-10-13)
+
+
+### Bug Fixes
+
+* reference correct variable for license ID ([4ed6ac0](https://github.com/thrashplay/thrashplay-app-creators/commit/4ed6ac0))
+
+
+
+
+
 # [0.1.0-development.4](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-lib@0.1.0-development.3...create-thrashplay-lib@0.1.0-development.4) (2019-10-13)
 
 

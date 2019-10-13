@@ -1,6 +1,6 @@
 {
   "name": "create-thrashplay-lib",
-  "version": "0.1.0-development.4",
+  "version": "0.1.0-development.5",
   "description": "Tool used to initialize a new Thrashplay node project.",
   "keywords": [
     "code-generator"

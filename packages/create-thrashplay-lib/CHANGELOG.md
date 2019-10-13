@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-development.3](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-lib@0.1.0-development.2...create-thrashplay-lib@0.1.0-development.3) (2019-10-13)
+
+
+### Features
+
+* move lerna add-package to standalone generator ([d5c6fa9](https://github.com/thrashplay/thrashplay-app-creators/commit/d5c6fa9))
+
+
+
+
+
 # [0.1.0-development.2](https://github.com/thrashplay/thrashplay-app-creators/compare/create-thrashplay-lib@0.1.0-development.1...create-thrashplay-lib@0.1.0-development.2) (2019-10-13)
 
 

@@ -15,7 +15,7 @@
     "release": "yarn lerna publish --yes --conventional-commits",
     "release:graduate": "yarn release --conventional-graduate",
     "release:pre": "yarn release --conventional-prerelease --preid ${PRERELEASE_ID} --dist-tag ${PRERELEASE_ID}",
-    "template": "cross-env HYGEN_TMPLS=packages/hygen-thrashplay-node-generators/templates yarn hygen",
+    "template": "cross-env HYGEN_TMPLS=packages/create-thrashplay-lib/_templates yarn hygen",
     "test": "yarn lerna run test"
   },
   "repository": {

@@ -51,12 +51,12 @@ const getDerivedArgs = (args) => {
   }
 
   return {
-    createThrashplayAppVersion: getPackageVersion(),
-    createThrashplayAppScriptsDir: path.resolve(appRoot.path, 'node_modules', 'create-thrashplay-app', 'dist'),
+    createThrashplayLibVersion: getPackageVersion(),
+    createThrashplayLibScriptsDir: path.resolve(appRoot.path, 'node_modules', 'create-thrashplay-lib', 'dist'),
     projectDir: path.resolve(process.cwd(), args.name),
     packageName: getPackageName(),
     ...args,
-    templateSourceDir: path.resolve(appRoot.path, 'node_modules', 'create-thrashplay-app', 'dist', 'templates'),
+    templateSourceDir: path.resolve(appRoot.path, 'node_modules', 'create-thrashplay-lib', 'dist', 'templates'),
   }
 }
 
@@ -74,6 +74,21 @@ module.exports = {
           type: 'input',
           name: 'description',
           message: 'Description:',
+        },
+        {
+          type: 'select',
+          name: 'ciType',
+          message: 'CI Type:',
+          choices: [
+            {
+              message: 'Drone: JSonnet (Thrashplay Base)',
+              name: 'drone',
+            },
+            {
+              message: 'None',
+              name: 'none',
+            }
+          ],
         },
         {
           type: 'select',

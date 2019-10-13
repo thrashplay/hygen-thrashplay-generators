@@ -8,10 +8,11 @@ to: <%= projectDir %>/package.json
   "private": true,
   "scripts": {
     "bootstrap": "yarn lerna bootstrap",
-    "build": "yarn lerna run build",
-    "release": "yarn lerna publish --conventional-commits",
+    "build": "yarn clean && yarn lerna run build",
+    "clean": "yarn lerna run clean",
+    "release": "yarn lerna publish --yes --conventional-commits",
     "release:graduate": "yarn release --conventional-graduate",
-    "release:pre": "yarn release --conventional-prerelease --preid preview --dist-tag preview --no-git-tag-version --no-push",
+    "release:pre": "yarn release --conventional-prerelease --preid ${PRERELEASE_ID} --dist-tag ${PRERELEASE_ID}",
     "test": "yarn lerna run test"
   },
   "dependencies": {

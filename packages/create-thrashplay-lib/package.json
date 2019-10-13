@@ -9,7 +9,7 @@
   "author": "Sean Kleinjung <sean@thrashplay.com>",
   "main": "dist/cli.js",
   "bin": {
-    "create-thrashplay-app": "dist/cli.js",
+    "create-thrashplay-lib": "dist/cli.js",
     "fetch-license": "dist/fetch-license.js",
     "fetch-license-ids": "dist/fetch-license-ids.js",
     "install-thrashplay-templates": "dist/install.js",

@@ -14,7 +14,7 @@ const getPackageName = () => {
 
 module.exports = {
   withDefaultArguments: (args) => _.merge({}, args, {
-    createThrashplayAppScriptsDir: path.resolve(appRoot.path, 'node_modules', 'create-thrashplay-app', 'dist'),
+    createThrashplayLibScriptsDir: path.resolve(appRoot.path, 'node_modules', 'create-thrashplay-lib', 'dist'),
     projectDir: path.resolve(appRoot.path),
     packageName: getPackageName(),
   })

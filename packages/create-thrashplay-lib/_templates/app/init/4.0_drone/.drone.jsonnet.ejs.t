@@ -1,3 +1,6 @@
+---
+to: <% if (ciType === 'drone') { %><%= projectDir %>/.drone.jsonnet<% } else { %><%= projectDir %>/.drone.not.jsonnet<% } %>
+---
 local createPipelines(steps) = [
   {
     steps: [
@@ -16,31 +19,6 @@ local createPipelines(steps) = [
           }
         }
       }),
-
-      steps.custom('slack-notification', {
-        image: 'plugins/slack',
-        settings: {
-          webhook: {
-            from_secret: 'SLACK_NOTIFICATION_WEBHOOK',
-          },
-          channel: 'deployments',
-          template: |||
-            {{#success build.status}}
-              :+1: *<https://drone.thrashplay.com/thrashplay/{{repo.name}}/{{build.number}}|BUILD SUCCESS: #{{build.number}}>*
-            {{else}}
-              :octagonal_sign: *<https://drone.thrashplay.com/thrashplay/{{repo.name}}/{{build.number}}|BUILD FAILURE: #{{build.number}}>*
-            {{/success}}
-
-            Project: *{{repo.name}}*
-            Triggered by: commit to _{{build.branch}}_ (*<https://drone.thrashplay.com/link/thrashplay/{{repo.name}}/commit/{{build.commit}}|{{truncate build.commit 8}}>*)
-
-            ```{{build.message}}```
-          |||
-        },
-        when: {
-          status: [ 'success', 'failure' ]
-        }
-      })
     ]
   },
 ];

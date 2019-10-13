@@ -7,7 +7,10 @@ local createPipelines(steps) = [
       steps.yarn('install', ['install --frozen-lockfile --non-interactive']),
 
       steps.yarn('bootstrap'),
+
+      steps.yarn('precheck', ['commitlint:last', 'lint']),
       steps.yarn('build'),
+
       steps.yarn('test'),
 
       steps.publish({

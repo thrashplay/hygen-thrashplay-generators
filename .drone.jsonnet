@@ -28,9 +28,11 @@ local pipelineBuilder = function (steps, when, env, utils, templates) [
         // publish prereleases from every master build
         steps.release(
         {
-          amendCommits: true,
+          version: {
+            amend: true,
+            lernaOptions: ['--conventional-prerelease', '--preid', 'next'],
+          },
           npmTokenSecret: 'NPM_PUBLISH_TOKEN',
-          version: 'version:prerelease --preid next --yes',
 //          publish: 'publish:tagged --dist-tag next --yes',
         }) + isPublishable,
 
@@ -55,8 +57,11 @@ local pipelineBuilder = function (steps, when, env, utils, templates) [
         // promote build from any branch, because it's manual
         steps.release({
           npmTokenSecret: 'NPM_PUBLISH_TOKEN',
-          version: 'version:graduate --yes',
-          publish: 'publish:tagged --dist-tag ${DRONE_DEPLOY_TO} --yes',
+          version: {
+            amend: false,
+            lernaOptions: ['--conventional-graduate'],
+          },
+//          publish: 'publish:tagged --dist-tag ${DRONE_DEPLOY_TO} --yes',
         }),
 
         steps.slack(templates.promotion.buildCompleted, 'notify-complete')
@@ -380,9 +385,10 @@ local __slackStepBuilder(message = null, stepName = 'slack', channelOverride = n
  * - version: the list of Yarn commands to run when versioning
  */
 local __releaseStepBuilder(releaseConfig = {}) = {
+  local amendCommits = __.get(releaseConfig, 'version.amend', false),
   local hasVersionConfig() = !__.isNullOrEmpty(__.get(releaseConfig, 'version')),
   local hasPublishConfig() = !__.isNullOrEmpty(__.get(releaseConfig, 'publish')),
-  local amendCommits = __.get(releaseConfig, 'amendCommits', false),
+  local lernaVersionOptions = __.get(releaseConfig, 'version.lernaOptions', []),
   local npmTokenSecret = __.get(releaseConfig, 'npmTokenSecret'),
 
   validate: function (pipelineConfig)
@@ -406,10 +412,17 @@ local __releaseStepBuilder(releaseConfig = {}) = {
           if amendCommits then
             createCustomStep('version', pipelineConfig.nodeImage, [
               'sh .ci/amend-commit.sh',
-              releaseConfig.version + ' --no-push --amend --no-changelog',
+              'yarn lerna version ' + std.join(' ', __.join([
+                lernaVersionOptions,
+                '--amend',
+                '--no-changelog',
+                '--no-push',
+                '--yes',
+              ])),
               'sh .ci/push-tags.sh'
             ])
-          else createYarnStep('version', releaseConfig.version);
+          else
+            createYarnStep('version', 'lerna version ' + std.join(' ', __.join(lernaVersionOptions)));
 
     __.join([
       if (hasPublishConfig()) then __npmAuthStepBuilder(npmTokenSecret).build(pipelineConfig),

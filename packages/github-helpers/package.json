@@ -1,6 +1,6 @@
 {
   "name": "@thrashplay/github-helpers",
-  "version": "0.3.2-next.0",
+  "version": "0.3.2-next.1",
   "description": "Helper methods used by @thrashplay/bootstrap-library for accessing GitHub APIs.",
   "license": "MIT",
   "author": "Sean Kleinjung <sean@thrashplay.com>",

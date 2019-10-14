@@ -91,7 +91,7 @@ local configurePipelines(steps, when, env, utils) = [
         // promote build from any branch, because it's manual
         steps.release({
           npmTokenSecret: 'NPM_PUBLISH_TOKEN',
-          version: ['yarn version:graduate'],
+          version: ['version:graduate'],
           publish: [
             'publish:tagged --dist-tag ${DRONE_DEPLOY_TO}',
             'publish:tagged --dist-tag latest',

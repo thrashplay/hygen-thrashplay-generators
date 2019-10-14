@@ -45,10 +45,12 @@
     "clean": "yarn lerna run clean",
     "commitlint:last": "yarn commitlint --verbose --from HEAD~1 --to HEAD",
     "lint": "echo No files in project to lint!",
-    "release": "yarn lerna publish --yes --conventional-commits",
-    "release:graduate": "yarn release --conventional-graduate",
-    "release:pre": "yarn release --conventional-prerelease --preid ${PRERELEASE_ID} --dist-tag ${PRERELEASE_ID}",
+    "release": "yarn lerna publish --yes",
+    "publish:tagged": "yarn lerna publish from-git",
+    "release:pre": "cross-env-shell \"yarn version:prerelease --preid ${PRERELEASE_ID} && yarn publish:tagged --dist-tag ${PRERELEASE_ID}\"",
     "template": "cross-env HYGEN_TMPLS=packages/bootstrap-library/_templates yarn hygen",
-    "test": "echo No files in project to test!"
+    "test": "echo No files in project to test!",
+    "version:graduate": "yarn lerna version --conventional-graduate",
+    "version:prerelease": "yarn lerna version --conventional-prerelease"
   }
 }

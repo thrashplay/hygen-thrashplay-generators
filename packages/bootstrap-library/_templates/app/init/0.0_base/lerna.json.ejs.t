@@ -3,9 +3,13 @@ to: "<%= projectDir %>/lerna.json"
 ---
 {
   "command": {
+    "publish": {
+      "conventionalCommits": true,
+      "message": "chore(publish): Publish latest versions [ci skip]."
+    },
     "version": {
       "allowBranch": ["master", "develop"],
-      "message": "chore(release): publish latest versions [ci skip]"
+      "conventionalCommits": true
     }
   },
   "ignore-changes": [

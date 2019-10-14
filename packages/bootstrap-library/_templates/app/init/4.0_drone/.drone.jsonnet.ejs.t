@@ -1,40 +1,117 @@
 ---
 to: <% if (ciType === 'drone') { %><%= projectDir %>/.drone.jsonnet<% } else { %><%= projectDir %>/.drone.not.jsonnet<% } %>
 ---
-local createPipelines(steps) = [
+local templates = {
+  local droneHost = 'https://PLACEHOLDER_URL',
+
+  continuousIntegration: {
+    local buildUrl = '%s/{{repo.owner}}/{{repo.name}}/{{build.number}}' % droneHost,
+    local commitUrl = '%s/link/{{repo.owner}}/{{repo.name}}/commit/{{build.commit}}' % droneHost,
+
+    buildStarted: @':arrow_forward: Started <%s|{{repo.name}} build #{{build.number}}> on _{{build.branch}}_' % buildUrl,
+    buildCompleted:
+      '{{#success build.status}}\n'+
+      '  :+1: *<%s|BUILD SUCCESS: #{{build.number}}>*\n' % buildUrl +
+      '{{else}}\n' +
+      '  :octagonal_sign: *<%s|BUILD FAILURE: #{{build.number}}>*\n' % buildUrl +
+      '{{/success}}\n' +
+      '\n' +
+      'Project: *{{repo.name}}*\n' +
+      'Triggered by: commit to _{{build.branch}}_ (*<%s|{{truncate build.commit 8}}>*)\n' % commitUrl +
+      '\n' +
+      '```{{build.message}}```'
+  },
+  promotion: {
+    local linkedSha = '*<%s/link/{{repo.owner}}/{{repo.name}}/commit/{{build.commit}}|{{repo.name}}@{{truncate build.commit 8}}>*' % droneHost,
+    local buildNumberString = '(<%s/{{repo.owner}}/{{repo.name}}/{{build.number}}|Build #{{build.number}}>)' % droneHost,
+
+    buildStarted: ':arrow_up: Promoting %s to _{{build.deployTo}}_. %s' % [linkedSha, buildNumberString],
+    buildCompleted:
+      '{{#success build.status}}\n' +
+      '  :checkered_flag: Successfully promoted %s to _{{build.deployTo}}_. %s\n' % [linkedSha, buildNumberString] +
+      '{{else}}\n' +
+      '  :octagonal_sign: Failed to promote %s to _{{build.deployTo}}_. %s\n' % [linkedSha, buildNumberString] +
+      '{{/success}}\n' +
+      '\n' +
+      'Build message:\n' +
+      '\n' +
+      '```{{build.message}}```\n'
+  },
+};
+
+local slackConfig() = {
+  webhookSecret: 'SLACK_NOTIFICATION_WEBHOOK',
+  channel: 'automation',
+};
+
+local createBuildSteps(steps) = [
+  steps.yarn('install', ['install --frozen-lockfile --non-interactive']),
+  steps.yarn('bootstrap'),
+
+  steps.yarn('precheck', ['commitlint:last', 'lint']),
+  steps.yarn('build'),
+
+  steps.yarn('test'),
+];
+
+local configurePipelines(steps, when, env, utils) = [
   {
-    steps: [
-      steps.yarn('install', ['install --frozen-lockfile --non-interactive']),
+    name: 'continuous-integration',
+    slack: slackConfig(),
 
-      steps.yarn('bootstrap'),
+    steps:
+      utils.join([
+        steps.slack(templates.continuousIntegration.buildStarted, 'notify-start'),
+        createBuildSteps(steps),
 
-      steps.yarn('precheck', ['commitlint:last', 'lint']),
-      steps.yarn('build'),
+        // publish prereleases from every master build
+        steps.release(
+        {
+          npmTokenSecret: 'NPM_PUBLISH_TOKEN',
+          version: ['version:prerelease --preid next --yes'],
+          publish: ['publish:tagged --dist-tag next --yes'],
+        }) + when(branch = 'master'),
 
-      steps.yarn('test'),
+        steps.slack(templates.continuousIntegration.buildCompleted, 'notify-complete')
+          + when(status = ['success', 'failure']),
+      ]),
 
-      steps.publish({
-        tokenSecret: 'NPM_PUBLISH_TOKEN',
-        configurations: [
-          {
-            branches: ['master'],
-            prerelease: 'alpha',
-          },
-          {
-            branches: ['develop'],
-            prerelease: 'qa',
-            canary: true,
-          },
-          {
-            branches: {
-              exclude: ['master', 'develop'],
-            },
-            prerelease: 'unstable',
-            canary: true,
-          },
-        ],
-      }),
-    ],
+    trigger: {
+      event: {
+        include: ['push'],
+      }
+    },
+  },
+  {
+    name: 'promote-build',
+    slack: slackConfig(),
+
+    steps:
+      utils.join([
+        steps.slack(templates.promotion.buildStarted, 'notify-start'),
+        createBuildSteps(steps),
+
+        // promote build from any branch, because it's manual
+        steps.release({
+          npmTokenSecret: 'NPM_PUBLISH_TOKEN',
+          version: ['version:graduate'],
+          publish: [
+            'publish:tagged --dist-tag ${DRONE_DEPLOY_TO} --yes',
+            'publish:tagged --dist-tag latest  --yes',
+          ]
+        }),
+
+        steps.slack(templates.promotion.buildCompleted, 'notify-complete')
+          + when(status = ['success', 'failure']),
+      ]),
+
+    trigger: {
+      event: {
+        include: ['promote'],
+      }
+    }
+  },
+];
 
     notifications: {
       slack: {
@@ -63,201 +140,442 @@ local createPipelines(steps) = [
 ];
 
 // !!! BEGIN AUTO-GENERATED CONFIGURATION !!!
+// !!! [TPD/DSL] v0.1.0-alpha.0
 // !!! The following content is not meant to be edited by hand
 // !!! Changes below this line may be overwritten by generators in thrashplay-app-creators
 
-local __initGitHubStep(pipelineConfig) = {
-   local defaultEmail = "`git log -1 --pretty=format:'%ae'`",
-   local defaultName = "`git log -1 --pretty=format:'%an'`",
-   local authorEmail =
-     if std.objectHas(pipelineConfig, 'git') then
-       if std.objectHas(pipelineConfig.git, 'authorEmail') then pipelineConfig.git.authorEmail else defaultEmail
-     else
-       defaultEmail,
+/**
+ * Thrashplay helper library
+ */
+local __ = {
+  castArray(value): if (std.isArray(value)) then value else [value],
+  execIf(predicate, action, default): if predicate then action() else default,
 
-  local authorName =
-     if std.objectHas(pipelineConfig, 'git') then
-       if std.objectHas(pipelineConfig.git, 'authorName') then pipelineConfig.git.authorName else defaultName
-     else
-       defaultName,
+  /**
+   * Provides 'undefined'-safe lookup of arbitrarily-nested object properties. Takes the following properties:
+   *
+   * object: the object ccontaining the property to lookup
+   * path: a string containing the property path (i.e. "foo.bar.baz"), or an array representing the path (ie. ["foo", "bar", "baz"[
+   * default (optional): the value to return if the property does not exist, defaults to null
+   */
+  get(object, path, default = null):
+    local __getRecursive(index, object, path, default) =
+      if __.isNull(object) || __.isNull(path)
+        then default
+        else
+          if index >= std.length(path) || !std.objectHas(object, path[index])
+            // object doesn't have next path part, or we have gone too far (probably means an empty path array was passed)
+            then default
+            else if index == std.length(path) - 1
+              // we are at the end of the path array, so return the value
+              then object[path[index]]
+              // the path is still valid, but there is more to traverse
+              else __getRecursive(index + 1, object[path[index]], path, default);
+    __getRecursive(0, object, if std.isArray(path) then path else std.split(path, '.'), default),
 
-   name: 'init-git',
-   image: 'alpine/git',
-   commands: [
-     ': *** Initializing git user information...',
-     'git config --local user.email "' + authorEmail + '"',
-     'git config --local user.name "' + authorName + '"',
-   ],
- };
+  hasNonEmptyArray(container, propertyName):
+    std.objectHas(container, propertyName)
+      && std.isArray(container[propertyName])
+      && std.length(container[propertyName]) > 0,
 
-local __custom(name, config = {}) = {
-  builder: function (pipelineConfig) [
-    config + {
+  isNull(value): value == null,
+  isNullOrEmpty(value): value == null || std.length(value) == 0,
+
+  // This is really useful if you want to make an arry out of
+  // constitutent parts which may be lists or optional.
+  //
+  // Returns the passed array with:
+  // 1. Nulls removed
+  // 2. Any elements who are arrays flattened into this arry.
+  //
+  // See: https://github.com/google/jsonnet/issues/234
+  //
+  join(a):
+    local maybeFlatten(acc, i) = if std.type(i) == "array" then acc + i else acc + [i];
+    std.foldl(maybeFlatten, __.withoutNulls(a), []),
+
+  notNull(value): value != null,
+  nullIfEmpty(array): if std.length(array) == 0 then null else array,
+
+  /**
+   * Validates a set of conditions, returning an array of error messages or null.
+   *
+   * The 'conditions' parameter is an object with arbitrary keys, each is mapped to a boolean value. If any of the
+   * booelean values are false, then the key will be used as a returned error message. If every condition is true, then
+   * the function returns an empty array.
+   */
+  assertAll(conditions):
+    local evaluate (accumulator, key) = __.join([accumulator, if !conditions[key]() then key]);
+    __.withoutNulls(std.foldl(evaluate, std.objectFields(conditions), [])),
+
+  withoutNulls(array): std.filter(__.notNull, array),
+};
+
+/**
+ * PipelineConfiguration
+ *
+ * Configures global options for a pipeline. See __defaultPipelineConfiguration
+ * for information on it's properties, and what values are used as defaults.
+ */
+
+local __defaultPipelineConfiguration = {
+  /**
+   * Defines environment variables that will be injected into every step.
+   */
+  environment: {},
+
+  /** write docs */
+  git: null,
+
+  /**
+   * Name of the pipeline
+   */
+  name: 'default',
+
+  /**
+   * Default Node image tag to use for this pipeline.
+   */
+  nodeImage: 'node:lts',
+
+  /**
+   * (Optional) shared pipeline-wide configuration for Slack messages. Can specify one or both of these properties:
+   *
+   *  - webhookSecret: the name of the Drone secret containing the Slack webhook URL
+   *  - channel: the name of the default channel to post messagse to
+   */
+  slack: null,
+
+  /**
+   * List of step builders
+   */
+  stepBuilders: [],
+
+  /**
+   * Trigger conditions for this pipeline.
+   * Must be an object matching the Drone trigger specification. See
+   * https://docker-runner.docs.drone.io/configuration/trigger/ for more
+   * information.
+   */
+  trigger: {}
+};
+
+/**
+ * Builders
+ *
+ * A builder is a function that takes arbitrary parameters, and returns an
+ * object that must have 'build' function. The build function must take a
+ * 'PipelineConfiguration' object, and return a single Step object, an array
+ * of Step objects, or null.
+ *
+ * Step objects should match the Step configuration requirements for the version
+ * of Drone in use. See https://docker-runner.docs.drone.io/configuration/steps/
+ * for available options.
+ *
+ * In addition to to the required 'build' function, a Step may optionally define
+ * a 'validate' function. This method is used to validate the step's
+ * configuration, and generate messages describing invalid options. The validate
+ * function must return an array of strings. If any step has errors, then the
+ * pipeline will abort, logging the messages generated by Steps.
+ */
+
+/**
+ * Creates a custom, named step from an arbitrary Step configuration.
+ * See https://docker-runner.docs.drone.io/configuration/steps/ for information
+ * on valid configuration options.
+ */
+local __customStepBuilder(name = null, image = null, commands = [], extraConfig = {}) = {
+  validate: function (pipelineConfig)
+    __.assertAll({
+      'Custom step definition is missing a [name] property.'(): name != null && std.length(name) > 0,
+      ['Step [' + name + '] is missing a container image.'](): image != null && std.length(image) > 0,
+      ['Step [' + name + '] does not have any commands.'](): !__.isNullOrEmpty(commands),
+    }),
+
+  build: function (pipelineConfig) [
+    extraConfig + {
       name: name,
+      image: image,
+      commands: __.castArray(commands)
     }
   ],
 };
 
-local __createCommand(script) = std.join(' ', ['yarn', script]);
-local __yarn(name, scripts = [name], config = {}) = {
-  builder: function (pipelineConfig) [
+/**
+ * Creates a custom, named plugin from an arbitrary Plugin configuration.
+ * See https://docker-runner.docs.drone.io/configuration/plugins/ for information
+ * on valid configuration options.
+ */
+local __pluginBuilder(name = null, image = null, settings = {}, extraConfig = {}) = {
+  validate: function (pipelineConfig)
+    __.assertAll({
+      'Plugin definition is missing a [name] property.'(): name != null && std.length(name) > 0,
+      ['Plugin [' + name + '] is missing a container image.'](): image != null && std.length(image) > 0,
+    }),
+
+  build: function (pipelineConfig) [
+    extraConfig + {
+      name: name,
+      image: image,
+      settings: settings,
+    }
+  ],
+};
+
+/**
+ * Creates a step that executes one or more Yarn commands. If no commands are specified, then the name of the step
+ * will be uased the Yarn command to run. The specified configuration object will be used to default any Step options
+ * that the Yarn configuration does not specifically override (name, image, and commands).
+ */
+local __yarnStepBuilder(name, commands = [name], config = {}) = {
+  local yarnStepBuilder = self,
+  createCommand(script):: std.join(' ', ['yarn', script]),
+
+  validate: function (pipelineConfig)
+    __.assertAll({
+      ['Yarn step definition is missing a [name] property.'](): name != null && std.length(name) > 0,
+      ['Yarn step [' + name + '] does not have any commands specified.'](): std.length(commands) > 0,
+    }),
+
+  build: function (pipelineConfig) [
     config + {
       name: name,
       image: pipelineConfig.nodeImage,
-      commands: [': *** yarn -- running commands: [' + std.join(', ', scripts) + ']'] + std.map(__createCommand, scripts),
+      commands:
+        [': *** yarn -- running commands: [' + std.join(', ', commands) + ']'] +
+        std.map(yarnStepBuilder.createCommand, commands),
     }
   ],
 };
 
-local __createPublishStep(image, baseStepName, publishConfig, environment = {}) = function(publish) {
-  local prereleaseScriptName =
-    if std.objectHas(publishConfig, 'prereleaseScriptName')
-    then publishConfig.prereleaseScriptName
-    else 'release:pre',
+/**
+ * Configures a plugin that will configure npm for future publish operations. Takes one parameter, which is the name
+ * of the Drone secret containing the NPM token for authorization.
+ */
+local __npmAuthStepBuilder(npmTokenSecret = null) = {
+  validate: function (pipelineConfig)
+    __.assertAll({
+      'npmTokenSecret is required if any publish commands are specified.'(): !__.isNullOrEmpty(npmTokenSecret)
+    }),
 
-  local releaseScriptName =
-    if std.objectHas(publishConfig, 'releaseScriptName')
-    then publishConfig.releaseScriptName
-    else 'release:graduate',
-
-  local releaseName = if std.objectHas(publish, 'prerelease') then publish.prerelease else 'production',
-  local scriptName = if std.objectHas(publish, 'prerelease')
-    then prereleaseScriptName
-    else releaseScriptName,
-  local isCanary = std.objectHas(publish, 'canary') && publish.canary,
-
-  name: std.join('-', [baseStepName, releaseName]),
-  image: image,
-  environment: environment + if std.objectHas(publish, 'prerelease') then { PRERELEASE_ID: publish.prerelease } else {},
-  commands: [
-    ': *** publishing: ' + releaseName,
-    std.join(' ', ['yarn', scriptName, if isCanary then '--canary']),
-  ],
-  when: {
-    branch: publish.branches,
-  }
-};
-local __publish(publishConfig = {}) = {
-  local baseStepName =
-    if std.objectHas(publishConfig, 'baseStepName')
-    then publishConfig.baseStepName
-    else 'publish',
-
-  local tokenSecret =
-    if std.objectHas(publishConfig, 'tokenSecret')
-    then publishConfig.tokenSecret
-    else 'NPM_PUBLISH_TOKEN',
-
-  builder: function (pipelineConfig)
-    (if std.objectHas(publishConfig, 'configurations') then [
-      {
-        name: std.join('-', [baseStepName, 'npm-auth']),
-        image: 'robertstettner/drone-npm-auth',
-        settings: {
-          token: {
-            from_secret: tokenSecret,
-          }
-        },
-      },
-    ] else []) +
-    if std.objectHas(publishConfig, 'configurations')
-      then std.map(__createPublishStep(
-        pipelineConfig.nodeImage,
-        baseStepName,
-        publishConfig), publishConfig.configurations)
-      else []
+  build: function (pipelineConfig)
+    __pluginBuilder(
+      'npm-auth',
+      'robertstettner/drone-npm-auth',
+      { token: { from_secret: npmTokenSecret } }
+    ).build(pipelineConfig)
 };
 
-local __pipelineFactory = {
-  /**
-   * Apply default configurations to a pipeline config.
-   */
-  withDefaults(configuration = {}):: configuration + {
-    local defaultEnvironment = {},
-    environment: defaultEnvironment + if std.objectHas(configuration, 'environment') then configuration.environment else {},
-    name: if std.objectHas(configuration, 'name') then configuration.name else 'default',
-    nodeImage: if std.objectHas(configuration, 'nodeImage') then configuration.nodeImage else 'node:lts',
-    steps: if std.objectHas(configuration, 'steps') then configuration.steps else [],
-    trigger: if std.objectHas(configuration, 'trigger') then configuration.trigger else {},
-  },
+/**
+ * Builds a step that will send a message to Slack. The channel and webhookSecret parameters are required, unless they
+ * have been specified in the 'slack' property of the PipelineConfiguration.
+ */
+local __slackStepBuilder(message = null, stepName = 'slack', channelOverride = null, webhookSecretOverride = null) = {
+  local webhook(pipelineConfig) =
+    if !__.isNullOrEmpty(webhookSecretOverride) then webhookSecretOverride else __.get(pipelineConfig, 'slack.webhookSecret'),
+  local channel(pipelineConfig) =
+    if !__.isNullOrEmpty(channelOverride) then channelOverride else __.get(pipelineConfig, 'slack.channel'),
 
-  withEnvironment(pipelineConfig):: function (step) { environment: pipelineConfig.environment } + step,
+  validate: function (pipelineConfig)
+    __.assertAll({
+      'Slack step definition is missing a [stepName] property.'(): stepName != null && std.length(stepName) > 0,
+      ['Slack step configuration [' + stepName + '] does not have a message.'](): !__.isNullOrEmpty(message),
+      'webhookSecret is required, either in the pipeline slack configuration or as a parameter.'():
+        !__.isNullOrEmpty(webhook(pipelineConfig)),
+      'channel is required, either in the pipeline slack configuration or as a parameter.'():
+        !__.isNullOrEmpty(channel(pipelineConfig)),
+    }),
 
-  getStartNotificationSteps(pipelineConfig)::
-    if (std.objectHas(pipelineConfig, 'notifications') && std.objectHas(pipelineConfig.notifications, 'slack') && std.objectHas(pipelineConfig.notifications.slack, 'startMessage'))
-      then [
-        {
-          image: 'plugins/slack',
-          name: 'slack-notify-start',
-          settings: {
-            channel: pipelineConfig.notifications.slack.channel,
-            template: pipelineConfig.notifications.slack.startMessage,
-            webhook: {
-              from_secret: pipelineConfig.notifications.slack.webhookSecret,
-            },
-          }
-        }
-      ]
-      else [],
-
-  getCompleteNotificationSteps(pipelineConfig)::
-    if (std.objectHas(pipelineConfig, 'notifications') && std.objectHas(pipelineConfig.notifications, 'slack') && std.objectHas(pipelineConfig.notifications.slack, 'completeMessage'))
-      then [
-        {
-          image: 'plugins/slack',
-          name: 'slack-notify-complete',
-          settings: {
-            webhook: {
-              from_secret: pipelineConfig.notifications.slack.webhookSecret,
-            },
-            channel: pipelineConfig.notifications.slack.channel,
-            template: pipelineConfig.notifications.slack.completeMessage,
-          },
-          when: {
-            status: [ 'success', 'failure' ]
-          }
-        }
-      ]
-      else [],
-
-  getInitSteps(pipelineConfig)::
-    __pipelineFactory.getStartNotificationSteps(pipelineConfig) +
-    [
-      __initGitHubStep(pipelineConfig)
-    ]
-    + if std.objectHas(pipelineConfig, 'npmPublish') then
-    [
+  build: function (pipelineConfig)
+    __pluginBuilder(
+      stepName,
+      'plugins/slack',
       {
-        name: 'init-npm-auth',
-        image: 'robertstettner/drone-npm-auth',
-        settings: {
-          token: {
-            from_secret: pipelineConfig.npmPublish.tokenSecret,
-          }
+        channel: channel(pipelineConfig),
+        template: message,
+        webhook: {
+          from_secret: webhook(pipelineConfig),
         },
       }
-    ] else [],
+    ).build(pipelineConfig)
+};
 
-  createSteps(pipelineConfig):: function (step)
-    std.map(
-      __pipelineFactory.withEnvironment(pipelineConfig),
-      if (std.objectHas(step, 'builder')) then step.builder(pipelineConfig) else []),
+/**
+ * Builds the steps needed to perform release (i.e. version and publish) tasks. Takes a configuration object, with the
+ * the following values:
+ *
+ * - npmTokenSecret: the name of the Drone secret with the NPM publish token; required if 'publish' is specified
+ * - publish: the list of Yarn commands to run when publishing
+ * - version: the list of Yarn commands to run when versioning
+ */
+local __releaseStepBuilder(releaseConfig = {}) = {
+  local hasVersionConfig() = !__.isNullOrEmpty(__.get(releaseConfig, 'version')),
+  local hasPublishConfig() = !__.isNullOrEmpty(__.get(releaseConfig, 'publish')),
+  local npmTokenSecret = __.get(releaseConfig, 'npmTokenSecret'),
 
-  createPipeline(configuration = {}): {
-    local config = __pipelineFactory.withDefaults(configuration),
+  validate: function (pipelineConfig)
+    local hasVersionOrPublishConfig() = hasVersionConfig() || hasPublishConfig();
+    __.assertAll({
+      'Release step must specify at least one of [version] or [publish].'(): hasVersionOrPublishConfig(),
+      'npmTokenSecret is required if any publish commands are specified.'(): !hasPublishConfig() || !__.isNullOrEmpty(npmTokenSecret)
+    }),
+
+  build: function (pipelineConfig)
+    local createYarnSteps(stepName, commands) = __yarnStepBuilder(std.join('-', ['release', stepName]), commands).build(pipelineConfig);
+    local buildVersionSteps() = if std.objectHas(releaseConfig, 'version') then createYarnSteps('version', releaseConfig.version);
+    local buildPublishSteps() = if std.objectHas(releaseConfig, 'publish') then createYarnSteps('publish', releaseConfig.publish);
+    __.join([
+      if (hasPublishConfig()) then __npmAuthStepBuilder(npmTokenSecret).build(pipelineConfig),
+      buildVersionSteps(),
+      buildPublishSteps()
+    ]),
+};
+
+/**
+ * Builds a step that initializes the Git author name and email. If the PipelineConfiguration has a 'git' property,
+ * it's values will be used. Otherwise, the identity of the last committer (the one triggering this build) wil be used.
+ */
+local __initGitStepBuilder() = {
+  build: function (pipelineConfig) {
+    local authorEmail = __.get(pipelineConfig, 'git.authorEmail', '`git log -1 --pretty=format:"%ae"`'),
+    local authorName = __.get(pipelineConfig, 'git.authorName', '`git log -1 --pretty=format:"%an"`'),
+
+    name: 'init-git',
+    image: 'alpine/git',
+    commands: [
+      ': *** Initializing git user information...',
+      'git config --local user.email ' + std.escapeStringBash(authorEmail) + '',
+      'git config --local user.name ' + std.escapeStringBash(authorName) + '',
+    ]
+  },
+};
+
+local __pipelineFactory() = {
+  local pipelineFactory = self,
+
+  /**
+   * Called when one or more steps have invalid configuration, and is supplied
+   * with the validation messages. Should generate a pipeline that terminates
+   * without building, but informs the user what was wrong.
+   */
+  createErrorSteps(pipelineConfig, errors)::
+    __customStepBuilder('log-configuration-errors', {
+      image: 'alpine',
+      commands: __.join([
+        ': *** There were errors in the build pipeline configuration:',
+        ': ',
+        std.map((function(message) ': ' + std.escapeStringBash(message)), errors),
+        'exit 1'
+      ])
+    }).build(pipelineConfig),
+
+  /**
+   * Get errors if the builders themselves are invalid, and don't conform to the proper interface.
+   */
+  getStepBuilderStructuralErrors(pipelineConfig, stepBuilders)::
+    local conditions(stepBuilder) = {
+      'Builder is missing a [build] method.'(): std.objectHas(stepBuilder, 'build')
+    };
+    local getValidationErrors (errors, stepBuilder) = __.join([errors, __.assertAll(conditions(stepBuilder))]);
+    std.foldl(getValidationErrors, stepBuilders, []),
+
+  /**
+   * Get validation errors from the builders themselves.
+   */
+  getStepBuilderValidationErrors(pipelineConfig, stepBuilders)::
+    local validateStep = function (errors, stepBuilder)
+      __.join([errors, __.get(stepBuilder, 'validate', (function (pipelineConfig) []))(pipelineConfig)]);
+    std.foldl(validateStep, stepBuilders, []),
+
+  /**
+   * Given an array of zero or more builders, attempts to create an array of corresponding steps.
+   *
+   * This methods returns an object with two properties:
+   *   - errors: If the configuration is invalid, this will be an array of messages describing the errors. Otherwise, null.
+   *   - steps: If the configuration is valid, this is a flattened array of 'step' objects. Otherwise, it will be null.
+   */
+  createStepsFromBuilders(pipelineConfig, stepBuilders):: {
+    local decorate(decorator, value) = if (std.isArray(value)) then std.map(decorator, value) else decorator(value),
+    local environment = { environment: pipelineConfig.environment },
+    local getExtraOptions(stepBuilder) = __.get(stepBuilder, 'extraOptions', {}),
+    local addOptionsToStep(stepBuilder) = function (step)
+      step +
+        { environment: (__.get(step, 'environment', {}) + __.get(stepBuilder, 'extraEnvironment', {})) } +
+        { when: (__.get(step, 'when', {}) + __.get(stepBuilder, 'when', {})) },
+    local withExtraOptions(stepBuilder, steps) = decorate(addOptionsToStep(stepBuilder), steps),
+    local withEnvironment(steps) = decorate((function (step) environment + step), steps),
+    local buildStep(stepBuilder) = withExtraOptions(stepBuilder, withEnvironment(stepBuilder.build(pipelineConfig))),
+
+    local errorMessages =
+      __.nullIfEmpty(
+        __.join([
+          pipelineFactory.getStepBuilderStructuralErrors(pipelineConfig, stepBuilders),
+          pipelineFactory.getStepBuilderValidationErrors(pipelineConfig, stepBuilders)
+        ])),
+
+    local addSteps(accumulator, stepBuilder) = __.join([accumulator, buildStep(stepBuilder)]),
+    errors: errorMessages,
+    steps: if errorMessages == null then std.foldl(addSteps, stepBuilders, []),
+  },
+
+  /**
+   * Performs the actual work of converting a PipelineConfiguration into a Pipeline object, in the format required by
+   * Drone.
+   */
+  createPipeline(prePipelineStepBuilders, postPipelineStepBuilders): function (configuration = {}) {
+    local config = __defaultPipelineConfiguration + configuration,
+    local errors = __.assertAll({
+      ["Pipeline [" + config.name + "] did not have any steps."](): __.hasNonEmptyArray(config, 'steps'),
+    }),
+
+    local allStepBuilders = prePipelineStepBuilders + config.steps + postPipelineStepBuilders,
+    local builderResult = pipelineFactory.createStepsFromBuilders(config, allStepBuilders),
 
     kind: 'pipeline',
     name: config.name,
+
     steps:
-      __pipelineFactory.getInitSteps(config) +
-      std.flattenArrays(std.map(__pipelineFactory.createSteps(config), config.steps)) +
-      __pipelineFactory.getCompleteNotificationSteps(config),
+      if builderResult.errors != null then
+        pipelineFactory.createErrorSteps(config, builderResult.errors)
+      else
+        builderResult.steps,
+
     trigger: config.trigger,
   },
 };
 
-std.map(__pipelineFactory.createPipeline, createPipelines({
-  custom: __custom,
-  publish: __publish,
-  yarn: __yarn,
-}))
+local __defaultPrePipelineStepBuilders = [__initGitStepBuilder()];
+local __defaultPostPipelineStepBuilders = [];
+
+local __optionsFactory = {
+  when(branch = null, cron = null, event = null, instance = null, ref = null, repo = null, trigger = null, status = null, target = null): {
+    local wrapString(value) = if (std.isString(value)) then __.castArray(value) else value,
+
+    when: {
+      [if branch != null then 'branch']: wrapString(branch),
+      [if cron != null then 'cron']: wrapString(cron),
+      [if event != null then 'event']: wrapString(event),
+      [if instance != null then 'instance']: wrapString(instance),
+      [if ref != null then 'ref']: wrapString(ref),
+      [if repo != null then 'repo']: wrapString(repo),
+      [if trigger != null then 'trigger']: wrapString(trigger),
+      [if status != null then 'status']: wrapString(status),
+      [if target != null then 'target']: wrapString(target),
+    }
+  },
+
+  environment(environment): {
+    extraEnvironment: environment
+  },
+};
+
+local __stepBuilderFactory = {
+  custom: __customStepBuilder,
+  plugin: __pluginBuilder,
+  release: __releaseStepBuilder,
+  slack: __slackStepBuilder,
+  yarn: __yarnStepBuilder,
+};
+
+std.map(
+  __pipelineFactory().createPipeline(__defaultPrePipelineStepBuilders, __defaultPostPipelineStepBuilders),
+  configurePipelines(__stepBuilderFactory, __optionsFactory.when, __optionsFactory.env, __ ))

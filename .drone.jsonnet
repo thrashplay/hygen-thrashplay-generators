@@ -13,6 +13,9 @@ local createBuildSteps(steps) = [
   steps.yarn('test'),
 ];
 
+// the release channel to promote builds too
+local releaseChannel = 'alpha';
+
 local pipelineBuilder = function (steps, when, env, utils, templates) [
   {
     name: 'continuous-integration',
@@ -56,8 +59,9 @@ local pipelineBuilder = function (steps, when, env, utils, templates) [
         steps.release(
         {
           publish: {
+            channels: 'next',
+            lernaOptions: 'from-git',
             npmTokenSecret: 'NPM_PUBLISH_TOKEN',
-            lernaOptions: ['from-git', '--dist-tag', 'next']
           },
         }),
 
@@ -86,7 +90,11 @@ local pipelineBuilder = function (steps, when, env, utils, templates) [
             amend: false,
             lernaOptions: '--conventional-graduate',
           },
-//          publish: 'publish:tagged --dist-tag ${DRONE_DEPLOY_TO} --yes',
+          publish: {
+            channels: ['latest', releaseChannel],
+            npmTokenSecret: 'NPM_PUBLISH_TOKEN',
+            lernaOptions: 'from-git',
+          }
         }),
 
         steps.slack(templates.promotion.buildCompleted, 'notify-complete')
@@ -95,7 +103,7 @@ local pipelineBuilder = function (steps, when, env, utils, templates) [
 
     trigger: {
       event: {
-        include: ['promote'],
+        include: ['custom'],
       }
     }
   },
@@ -126,11 +134,11 @@ local templates = {
   },
   publishing(releaseChannel): {
     buildStarted:
-      ':newspaper: *<%s|STARTING {{repo.name}} #{{build.number}}>*\n' % buildUrl +
-      'Publishing: {{build.tag}} to _%s_\n' % releaseChannel,
+      ':arrow_forward: *<%s|STARTING {{repo.name}} #{{build.number}}>*\n' % buildUrl +
+      'Publishing: {{build.tag}} to channel _%s_\n' % releaseChannel,
     buildCompleted:
       '{{#success build.status}}\n' +
-      '  :checkered_flag: *<%s|BUILD SUCCESS: #{{build.number}}>*\n' % buildUrl +
+      '  :+1: *<%s|BUILD SUCCESS: #{{build.number}}>*\n' % buildUrl +
       '  Project: _{{repo.name}}_\n' +
       "  Published: {{build.tag}} to channel _%s_\n" % releaseChannel +
       '{{else}}\n' +
@@ -142,7 +150,7 @@ local templates = {
   promotion: {
     buildStarted:
       ':arrow_up: *<%s|STARTING {{repo.name}} #{{build.number}}>*\n' % buildUrl +
-      'Promoting: {{build.tag}} to _{{build.deployTo}}_\n',
+      'Promoting: {{build.tag}} to channel _{{build.deployTo}}_\n',
     buildCompleted:
       '{{#success build.status}}\n' +
       '  :checkered_flag: *<%s|BUILD SUCCESS: #{{build.number}}>*\n' % buildUrl +
@@ -433,12 +441,14 @@ local __releaseStepBuilder(releaseConfig = {}) = {
   local lernaVersionOptions = __.join([__.get(releaseConfig, 'version.lernaOptions')]),
   local lernaPublishOptions = __.join([__.get(releaseConfig, 'publish.lernaOptions')]),
   local npmTokenSecret = __.get(releaseConfig, 'publish.npmTokenSecret'),
+  local releaseChannels = __.castArray(__.get(releaseConfig, 'publish.channels', 'latest')),
 
   validate: function (pipelineConfig)
     local hasVersionOrPublishConfig() = hasVersionConfig() || hasPublishConfig();
     __.assertAll({
       'Release step must specify at least one of [version] or [publish].'(): hasVersionOrPublishConfig(),
-      'npmTokenSecret is required if any publish commands are specified.'(): !hasPublishConfig() || !__.isNullOrEmpty(npmTokenSecret)
+      'npmTokenSecret is required if any publish commands are specified.'(): !hasPublishConfig() || !__.isNullOrEmpty(npmTokenSecret),
+      'A publish configuration cannot specify any empty [channels] property.'(): !hasPublishConfig() || !__.isNullOrEmpty(releaseChannels),
     }),
 
   build: function (pipelineConfig)
@@ -447,8 +457,29 @@ local __releaseStepBuilder(releaseConfig = {}) = {
     local createCustomStep(stepName, image, command) =
       __customStepBuilder(std.join('-', ['release', stepName]), image, command).build(pipelineConfig);
 
-    local buildPublishSteps() = if std.objectHas(releaseConfig, 'publish')
-      then createYarnStep('publish', 'lerna publish ' + std.join(' ', __.join([lernaPublishOptions, '--yes'])));
+    local buildPublishSteps() =
+      local createTagCommand(referenceTag) = function(tagToAdd)
+        'npx lerna exec --stream --no-bail --concurrency 1 -- ' +
+        'PKG_VERSION=$(npm v . dist-tags.%s); ' % referenceTag +
+        '[ -n "$PKG_VERSION" ] && ' +
+          '( npm dist-tag add ${LERNA_PACKAGE_NAME}@${PKG_VERSION} %s' % tagToAdd;
+
+      if std.objectHas(releaseConfig, 'publish') then createCustomStep('publish', pipelineConfig.nodeImage,
+        __.join([
+          // publish command to first channel
+          'lerna publish ' + std.join(' ', __.join([
+            lernaPublishOptions,
+            '--yes',
+            '--no-git-reset',
+            '--dist-tag',
+            releaseChannels[0],
+          ])),
+
+          // if there are other channels, add them with npm
+          if std.length(releaseChannels) > 1 then 'echo "Adding additional distribution tags..."',
+          std.map(createTagCommand(releaseChannels[0]), releaseChannels[1:]),
+        ]));
+
     local buildVersionSteps() =
       if !std.objectHas(releaseConfig, 'version') then null
         else

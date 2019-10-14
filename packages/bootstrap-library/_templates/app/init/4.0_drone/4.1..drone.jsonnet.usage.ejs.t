@@ -102,11 +102,11 @@ local templates = {
   },
   publishing(releaseChannel): {
     buildStarted:
-      ':newspaper: *<%s|STARTING {{repo.name}} #{{build.number}}>*\n' % buildUrl +
-      'Publishing: {{build.tag}} to _%s_\n' % releaseChannel,
+      ':arrow_forward: *<%s|STARTING {{repo.name}} #{{build.number}}>*\n' % buildUrl +
+      'Publishing: {{build.tag}} to channel _%s_\n' % releaseChannel,
     buildCompleted:
       '{{#success build.status}}\n' +
-      '  :checkered_flag: *<%s|BUILD SUCCESS: #{{build.number}}>*\n' % buildUrl +
+      '  :+1: *<%s|BUILD SUCCESS: #{{build.number}}>*\n' % buildUrl +
       '  Project: _{{repo.name}}_\n' +
       "  Published: {{build.tag}} to channel _%s_\n" % releaseChannel +
       '{{else}}\n' +
@@ -118,7 +118,7 @@ local templates = {
   promotion: {
     buildStarted:
       ':arrow_up: *<%s|STARTING {{repo.name}} #{{build.number}}>*\n' % buildUrl +
-      'Promoting: {{build.tag}} to _{{build.deployTo}}_\n',
+      'Promoting: {{build.tag}} to channel _{{build.deployTo}}_\n',
     buildCompleted:
       '{{#success build.status}}\n' +
       '  :checkered_flag: *<%s|BUILD SUCCESS: #{{build.number}}>*\n' % buildUrl +

@@ -1,33 +1,37 @@
 local templates = {
-  local linkedSha = '*<https://drone.thrashplay.com/link/thrashplay/{{repo.name}}/commit/{{build.commit}}|{{repo.name}}@{{truncate build.commit 8}}>*',
-  local buildNumberString = '(<https://drone.thrashplay.com/thrashplay/{{repo.name}}/{{build.number}}|Build #{{build.number}}>)',
+  local droneHost = 'https://drone.thrashplay.com',
 
   continuousIntegration: {
-    buildStarted: @':arrow_forward: Started <https://drone.thrashplay.com/thrashplay/{{repo.name}}/{{build.number}}|{{repo.name}} build #{{build.number}}> on _{{build.branch}}_',
+    local buildUrl = '%s/{{repo.owner}}/{{repo.name}}/{{build.number}}' % droneHost,
+    local commitUrl = '%s/link/{{repo.owner}}/{{repo.name}}/commit/{{build.commit}}' % droneHost,
+
+    buildStarted: @':arrow_forward: Started <%s|{{repo.name}} build #{{build.number}}> on _{{build.branch}}_' % buildUrl,
     buildCompleted:
       '{{#success build.status}}\n'+
-      '  :+1: *<https://drone.thrashplay.com/thrashplay/{{repo.name}}/{{build.number}}|BUILD SUCCESS: #{{build.number}}>*\n'+
-      '{{else}}\n'+
-      '  :octagonal_sign: *<https://drone.thrashplay.com/thrashplay/{{repo.name}}/{{build.number}}|BUILD FAILURE: #{{build.number}}>*\n'+
-      '{{/success}}\n'+
-      '\n'+
-      'Project: *{{repo.name}}*\n'+
-      'Triggered by: commit to _{{build.branch}}_ (*<https://drone.thrashplay.com/link/thrashplay/{{repo.name}}/commit/{{build.commit}}|{{truncate build.commit 8}}>*)\n'+
-      '\n'+
+      '  :+1: *<%s|BUILD SUCCESS: #{{build.number}}>*\n' % buildUrl +
+      '{{else}}\n' +
+      '  :octagonal_sign: *<%s|BUILD FAILURE: #{{build.number}}>*\n' % buildUrl +
+      '{{/success}}\n' +
+      '\n' +
+      'Project: *{{repo.name}}*\n' +
+      'Triggered by: commit to _{{build.branch}}_ (*<%s|{{truncate build.commit 8}}>*)\n' % commitUrl +
+      '\n' +
       '```{{build.message}}```'
   },
   promotion: {
-    buildStarted: @':arrow_forward: Started <https://drone.thrashplay.com/thrashplay/{{repo.name}}/{{build.number}}|{{repo.name}} build #{{build.number}}> on _{{build.branch}}_',
+    local linkedSha = '*<%s/link/{{repo.owner}}/{{repo.name}}/commit/{{build.commit}}|{{repo.name}}@{{truncate build.commit 8}}>*' % droneHost,
+    local buildNumberString = '(<%s/{{repo.owner}}/{{repo.name}}/{{build.number}}|Build #{{build.number}}>)' % droneHost,
+
+    buildStarted: ':arrow_up: Promoting %s to _{{build.deployTo}}_. %s' % [linkedSha, buildNumberString],
     buildCompleted:
-      '{{#success build.status}}\n'+
-      '  :+1: *<https://drone.thrashplay.com/thrashplay/{{repo.name}}/{{build.number}}|BUILD SUCCESS: #{{build.number}}>*\n'+
-      '{{else}}\n'+
-      '  :octagonal_sign: *<https://drone.thrashplay.com/thrashplay/{{repo.name}}/{{build.number}}|BUILD FAILURE: #{{build.number}}>*\n'+
-      '{{/success}}\n'+
-      '\n'+
-      'Project: *{{repo.name}}*\n'+
-      'Triggered by: commit to _{{build.branch}}_ (*<https://drone.thrashplay.com/link/thrashplay/{{repo.name}}/commit/{{build.commit}}|{{truncate build.commit 8}}>*)\n'+
-      '\n'+
+      '{{#success build.status}}\n' +
+      '  :checkered_flag: Successfully promoted %s to _{{build.deployTo}}_. %s\n' % [linkedSha, buildNumberString] +
+      '{{else}}\n' +
+      '  :octagonal_sign: Failed to promote %s to _{{build.deployTo}}_. %s\n' % [linkedSha, buildNumberString] +
+      '{{/success}}\n' +
+      '\n' +
+      'Build message:\n' +
+      '\n' +
       '```{{build.message}}```\n'
   },
 };

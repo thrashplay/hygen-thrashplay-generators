@@ -9,5 +9,8 @@ then
       exit 1
 fi
 
+# for debugging sake, just log what's changed
+git status
+
 # Force push the tags and amended message.
 git push --no-verify --follow-tags --force-with-lease=master:${DRONE_COMMIT_SHA} --set-upstream origin master

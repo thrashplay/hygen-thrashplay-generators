@@ -54,7 +54,7 @@ local configurePipelines(steps, when, env, utils) = [
 
     steps:
       utils.join([
-        steps.slack(templates.continuousIntegration.buildStarted),
+        steps.slack(templates.continuousIntegration.buildStarted, 'notify-start'),
         createBuildSteps(steps),
 
         // publish prereleases from every master build
@@ -65,7 +65,7 @@ local configurePipelines(steps, when, env, utils) = [
           publish: ['yarn publish:tagged --dist-tag next'],
         }) + when(branch = 'master'),
 
-        steps.slack(templates.continuousIntegration.buildCompleted),
+        steps.slack(templates.continuousIntegration.buildCompleted, 'notify-complete'),
       ]),
 
     trigger: {
@@ -80,7 +80,7 @@ local configurePipelines(steps, when, env, utils) = [
 
     steps:
       utils.join([
-        steps.slack(templates.promotion.buildStarted),
+        steps.slack(templates.promotion.buildStarted, 'notify-start'),
         createBuildSteps(steps),
 
         // promote build from any branch, because it's manual
@@ -93,7 +93,7 @@ local configurePipelines(steps, when, env, utils) = [
           ]
         }),
 
-        steps.slack(templates.promotion.buildCompleted)
+        steps.slack(templates.promotion.buildCompleted, 'notify-complete')
       ]),
 
     trigger: {
@@ -293,7 +293,7 @@ local __pluginBuilder(name = null, image = null, settings = {}, extraConfig = {}
  */
 local __yarnStepBuilder(name, commands = [name], config = {}) = {
   local yarnStepBuilder = self,
-  createCommand(script):: std.join(' ', ['echo', 'yarn', script]),
+  createCommand(script):: std.join(' ', ['yarn', script]),
 
   validate: function (pipelineConfig)
     __.assertAll({

@@ -206,8 +206,8 @@ local __yarnStepBuilder(name, commands = [name], config = {}) = {
       name: name,
       image: pipelineConfig.nodeImage,
       commands:
-        [': *** yarn -- running commands: [' + std.join(', ', commands) + ']'] +
-        std.map(yarnStepBuilder.createCommand, commands),
+        [': *** yarn -- running commands: [' + std.join(', ', __.castArray(commands)) + ']'] +
+        std.map(yarnStepBuilder.createCommand, __.castArray(commands)),
     }
   ],
 };
@@ -273,23 +273,72 @@ local __slackStepBuilder(message = null, stepName = 'slack', channelOverride = n
  * - version: the list of Yarn commands to run when versioning
  */
 local __releaseStepBuilder(releaseConfig = {}) = {
+  local amendCommits = __.get(releaseConfig, 'version.amend', false),
   local hasVersionConfig() = !__.isNullOrEmpty(__.get(releaseConfig, 'version')),
   local hasPublishConfig() = !__.isNullOrEmpty(__.get(releaseConfig, 'publish')),
-  local npmTokenSecret = __.get(releaseConfig, 'npmTokenSecret'),
+  local lernaVersionOptions = __.join([__.get(releaseConfig, 'version.lernaOptions')]),
+  local lernaPublishOptions = __.join([__.get(releaseConfig, 'publish.lernaOptions')]),
+  local npmTokenSecret = __.get(releaseConfig, 'publish.npmTokenSecret'),
+  local releaseChannels = __.castArray(__.get(releaseConfig, 'publish.channels', 'latest')),
 
   validate: function (pipelineConfig)
     local hasVersionOrPublishConfig() = hasVersionConfig() || hasPublishConfig();
     __.assertAll({
       'Release step must specify at least one of [version] or [publish].'(): hasVersionOrPublishConfig(),
-      'npmTokenSecret is required if any publish commands are specified.'(): !hasPublishConfig() || !__.isNullOrEmpty(npmTokenSecret)
+      'npmTokenSecret is required if any publish commands are specified.'(): !hasPublishConfig() || !__.isNullOrEmpty(npmTokenSecret),
+      'A publish configuration cannot specify any empty [channels] property.'(): !hasPublishConfig() || !__.isNullOrEmpty(releaseChannels),
     }),
 
   build: function (pipelineConfig)
-    local createYarnSteps(stepName, commands) = __yarnStepBuilder(std.join('-', ['release', stepName]), commands).build(pipelineConfig);
-    local buildVersionSteps() = if std.objectHas(releaseConfig, 'version') then createYarnSteps('version', releaseConfig.version);
-    local buildPublishSteps() = if std.objectHas(releaseConfig, 'publish') then createYarnSteps('publish', releaseConfig.publish);
+    local createYarnStep(stepName, command) =
+      __yarnStepBuilder(std.join('-', ['release', stepName]), command).build(pipelineConfig);
+    local createCustomStep(stepName, image, command) =
+      __customStepBuilder(std.join('-', ['release', stepName]), image, command).build(pipelineConfig);
+
+    local buildPublishSteps() =
+      local createTagCommand(referenceTag) = function(tagToAdd)
+        'npx lerna exec --stream --no-bail --concurrency 1 -- ' +
+        'PKG_VERSION=$(npm v . dist-tags.%s); ' % referenceTag +
+        '[ -n "$PKG_VERSION" ] && ' +
+          '( npm dist-tag add ${LERNA_PACKAGE_NAME}@${PKG_VERSION} %s' % tagToAdd;
+
+      if std.objectHas(releaseConfig, 'publish') then createCustomStep('publish', pipelineConfig.nodeImage,
+        __.join([
+          // publish command to first channel
+          'yarn lerna publish ' + std.join(' ', __.join([
+            lernaPublishOptions,
+            '--yes',
+            '--no-git-reset',
+            '--dist-tag',
+            releaseChannels[0],
+          ])),
+
+          // if there are other channels, add them with npm
+          if std.length(releaseChannels) > 1 then 'echo "Adding additional distribution tags..."',
+          std.map(createTagCommand(releaseChannels[0]), releaseChannels[1:]),
+        ]));
+
+    local buildVersionSteps() =
+      if !std.objectHas(releaseConfig, 'version') then null
+        else
+          if amendCommits then
+            createCustomStep('version', pipelineConfig.nodeImage, [
+              'sh .ci/amend-commit.sh',
+              'yarn lerna version ' + std.join(' ', __.join([
+                lernaVersionOptions,
+                '--amend',
+                '--no-changelog',
+                '--no-push',
+                '--yes',
+              ])),
+              'sh .ci/push-tags.sh'
+            ])
+          else
+            createYarnStep('version', 'lerna version ' + std.join(' ', __.join([lernaVersionOptions, '--yes'])));
+
     __.join([
       if (hasPublishConfig()) then __npmAuthStepBuilder(npmTokenSecret).build(pipelineConfig),
+      __customStepBuilder('fetch-tags', 'drone/git', 'git fetch --tags').build(pipelineConfig),
       buildVersionSteps(),
       buildPublishSteps()
     ]),
@@ -309,7 +358,7 @@ local __initGitStepBuilder() = {
     commands: [
       ': *** Initializing git user information...',
       'git config --local user.email ' + authorEmail,
-      'git config --local user.name ' + authorName ,
+      'git config --local user.name ' + authorName,
     ]
   },
 };
@@ -444,3 +493,4 @@ local __stepBuilderFactory = {
 std.map(
   __pipelineFactory().createPipeline(__defaultPrePipelineStepBuilders, __defaultPostPipelineStepBuilders),
   configurePipelines(__stepBuilderFactory, __optionsFactory.when, __optionsFactory.env, __ ))
+

@@ -16,10 +16,11 @@ local createBuildSteps(steps) = [
   steps.yarn('test'),
 ];
 
+// the release channel to promote builds too
+local releaseChannel = 'alpha';
+
 local pipelineBuilder = function (steps, when, env, utils, templates) [
   {
-    local isPublishable = when(branch = 'master'),
-
     name: 'continuous-integration',
     slack: slackConfig(),
 
@@ -27,23 +28,52 @@ local pipelineBuilder = function (steps, when, env, utils, templates) [
       utils.join([
         steps.slack(templates.continuousIntegration.buildStarted, 'notify-start'),
         createBuildSteps(steps),
-        steps.custom('amend-commit-message', 'drone/git', 'sh .ci/amend-commit.sh') + isPublishable,
 
         // publish prereleases from every master build
         steps.release(
         {
-          npmTokenSecret: 'NPM_PUBLISH_TOKEN',
-          version: ['version:prerelease --preid next --no-push --amend --yes'],
-//          publish: ['publish:tagged --dist-tag next --yes'],
-        }) + isPublishable,
+          version: {
+            amend: true,
+            lernaOptions: ['--conventional-prerelease', '--preid', 'next'],
+          },
+        }) + when(branch = 'master'),
 
-        steps.custom('push-tags', 'drone/git', 'sh .ci/push-tags.sh') + isPublishable,
         steps.slack(templates.continuousIntegration.buildCompleted, 'notify-complete') + when(status = ['success', 'failure']),
       ]),
 
     trigger: {
       event: {
         include: ['push'],
+      }
+    },
+  },
+  {
+    name: 'publish-tag',
+    slack: slackConfig(),
+
+    steps:
+      utils.join([
+        steps.slack(templates.publishing('next').buildStarted, 'notify-start'),
+        steps.yarn('install', ['install --frozen-lockfile --non-interactive']),
+        steps.yarn('bootstrap'),
+        steps.yarn('build'),
+
+        // publish prereleases from every master build
+        steps.release(
+        {
+          publish: {
+            channels: 'next',
+            lernaOptions: 'from-git',
+            npmTokenSecret: 'NPM_PUBLISH_TOKEN',
+          },
+        }),
+
+        steps.slack(templates.publishing('next').buildCompleted, 'notify-complete') + when(status = ['success', 'failure']),
+      ]),
+
+    trigger: {
+      event: {
+        include: ['tag'],
       }
     },
   },
@@ -59,10 +89,15 @@ local pipelineBuilder = function (steps, when, env, utils, templates) [
         // promote build from any branch, because it's manual
         steps.release({
           npmTokenSecret: 'NPM_PUBLISH_TOKEN',
-          version: ['version:graduate --yes'],
-          publish: [
-            'publish:tagged --dist-tag ${DRONE_DEPLOY_TO} --yes',
-          ]
+          version: {
+            amend: false,
+            lernaOptions: '--conventional-graduate',
+          },
+          publish: {
+            channels: ['latest', releaseChannel],
+            npmTokenSecret: 'NPM_PUBLISH_TOKEN',
+            lernaOptions: 'from-git',
+          }
         }),
 
         steps.slack(templates.promotion.buildCompleted, 'notify-complete')
@@ -71,14 +106,14 @@ local pipelineBuilder = function (steps, when, env, utils, templates) [
 
     trigger: {
       event: {
-        include: ['promote'],
+        include: ['custom'],
       }
     }
   },
 ];
 
 local templates = {
-  local droneHost = 'https://PLACEHOLDER_URL',
+  local droneHost = 'PLACEHOLDER_URL',
   local buildUrl = '%s/{{repo.owner}}/{{repo.name}}/{{build.number}}' % droneHost,
 
   continuousIntegration: {

@@ -79,39 +79,56 @@ local pipelineBuilder = function (steps, when, env, utils, templates) [
 
 local templates = {
   local droneHost = 'https://PLACEHOLDER_URL',
+local buildUrl = '%s/{{repo.owner}}/{{repo.name}}/{{build.number}}' % droneHost,
 
   continuousIntegration: {
-    local buildUrl = '%s/{{repo.owner}}/{{repo.name}}/{{build.number}}' % droneHost,
     local commitUrl = '%s/link/{{repo.owner}}/{{repo.name}}/commit/{{build.commit}}' % droneHost,
 
-    buildStarted: @':arrow_forward: Started <%s|{{repo.name}} build #{{build.number}}> on _{{build.branch}}_' % buildUrl,
-    buildCompleted:
-      '{{#success build.status}}\n'+
-      '  :+1: *<%s|BUILD SUCCESS: #{{build.number}}>*\n' % buildUrl +
-      '{{else}}\n' +
-      '  :octagonal_sign: *<%s|BUILD FAILURE: #{{build.number}}>*\n' % buildUrl +
-      '{{/success}}\n' +
-      '\n' +
-      'Project: *{{repo.name}}*\n' +
-      'Triggered by: commit to _{{build.branch}}_ (*<%s|{{truncate build.commit 8}}>*)\n' % commitUrl +
-      '\n' +
-      '```{{build.message}}```'
-  },
-  promotion: {
-    local linkedSha = '*<%s/link/{{repo.owner}}/{{repo.name}}/commit/{{build.commit}}|{{repo.name}}@{{truncate build.commit 8}}>*' % droneHost,
-    local buildNumberString = '(<%s/{{repo.owner}}/{{repo.name}}/{{build.number}}|Build #{{build.number}}>)' % droneHost,
-
-    buildStarted: ':arrow_up: Promoting %s to _{{build.deployTo}}_. %s' % [linkedSha, buildNumberString],
+    buildStarted:
+      ':arrow_forward: <%s|STARTING {{repo.name}} #{{build.number}}>\n' % buildUrl +
+      'Building: <%s|{{truncate build.commit 8}}> on branch _{{build.branch}}_' % commitUrl,
     buildCompleted:
       '{{#success build.status}}\n' +
-      '  :checkered_flag: Successfully promoted %s to _{{build.deployTo}}_. %s\n' % [linkedSha, buildNumberString] +
+      '  :+1: *<%s|BUILD SUCCESS: #{{build.number}}>*\n' % buildUrl +
+      '  Project: _{{repo.name}}_\n' +
+      '  Built: <%s|{{truncate build.commit 8}}> on branch _{{build.branch}}_' % commitUrl +
       '{{else}}\n' +
-      '  :octagonal_sign: Failed to promote %s to _{{build.deployTo}}_. %s\n' % [linkedSha, buildNumberString] +
+      '  :octagonal_sign: *<%s|BUILD FAILED: #{{build.number}}>*\n' % buildUrl +
+      '  Project: _{{repo.name}}_\n' +
+      "  Failed: Building <%s|{{truncate build.commit 8}}> on branch _{{build.branch}}_" % commitUrl +
       '{{/success}}\n' +
       '\n' +
-      'Build message:\n' +
-      '\n' +
-      '```{{build.message}}```\n'
+      '```{{build.message}}```',
+  },
+  publishing(releaseChannel): {
+    buildStarted:
+      ':newspaper: <%s|STARTING {{repo.name}} #{{build.number}}>\n' % buildUrl +
+      'Publishing: {{build.tag}} to _%s_\n' % releaseChannel,
+    buildCompleted:
+      '{{#success build.status}}\n' +
+      '  :checkered_flag: *<%s|BUILD SUCCESS: #{{build.number}}>*\n' % buildUrl +
+      '  Project: _{{repo.name}}_\n' +
+      "  Published: {{build.tag}} to channel '_%s_'\n" % releaseChannel +
+      '{{else}}\n' +
+      '  :octagonal_sign: *<%s|BUILD FAILED: #{{build.number}}>*\n' % buildUrl +
+      '  Project: _{{repo.name}}_\n' +
+      "  Failed: Publishing {{build.tag}} to channel '_%s_'\n" % releaseChannel +
+      '{{/success}}\n'
+  },
+  promotion: {
+    buildStarted:
+      ':arrow_up: <%s|STARTING {{repo.name}} #{{build.number}}>\n' % buildUrl +
+      'Promoting: {{build.tag}} to _{{build.deployTo}}_\n',
+    buildCompleted:
+      '{{#success build.status}}\n' +
+      '  :checkered_flag: *<%s|BUILD SUCCESS: #{{build.number}}>*\n' % buildUrl +
+      '  Project: _{{repo.name}}_\n' +
+      "  Promoted: {{build.tag}} to channel '_{{build.deployTo}}_'\n" +
+      '{{else}}\n' +
+      '  :octagonal_sign: *<%s|BUILD FAILED: #{{build.number}}>*\n' % buildUrl +
+      '  Project: _{{repo.name}}_\n' +
+      "  Failed: Promoting {{build.tag}} to channel '_{{build.deployTo}}_'\n" +
+      '{{/success}}\n'
   },
 };
 

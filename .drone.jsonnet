@@ -61,11 +61,12 @@ local configurePipelines(steps, when, env, utils) = [
         steps.release(
         {
           npmTokenSecret: 'NPM_PUBLISH_TOKEN',
-          version: ['yarn version:prerelease --preid next'],
-          publish: ['yarn publish:tagged --dist-tag next'],
+          version: ['version:prerelease --preid next'],
+          publish: ['publish:tagged --dist-tag next'],
         }) + when(branch = 'master'),
 
-        steps.slack(templates.continuousIntegration.buildCompleted, 'notify-complete'),
+        steps.slack(templates.continuousIntegration.buildCompleted, 'notify-complete')
+          + when(status = ['success', 'failure']),
       ]),
 
     trigger: {
@@ -88,12 +89,13 @@ local configurePipelines(steps, when, env, utils) = [
           npmTokenSecret: 'NPM_PUBLISH_TOKEN',
           version: ['yarn version:graduate'],
           publish: [
-            'yarn publish:tagged --dist-tag ${DRONE_DEPLOY_TO}',
-            'yarn publish:tagged --dist-tag latest',
+            'publish:tagged --dist-tag ${DRONE_DEPLOY_TO}',
+            'publish:tagged --dist-tag latest',
           ]
         }),
 
         steps.slack(templates.promotion.buildCompleted, 'notify-complete')
+          + when(status = ['success', 'failure']),
       ]),
 
     trigger: {

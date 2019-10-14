@@ -60,7 +60,7 @@ local configurePipelines(steps, when, env, utils) = [
         // publish prereleases from every master build
         steps.release(
         {
-          npmTokenSecret: 'NPM_AUTHENTICATION_TOKEN',
+          npmTokenSecret: 'NPM_PUBLISH_TOKEN',
           version: ['yarn version:prerelease --preid next'],
           publish: ['yarn publish:tagged --dist-tag next'],
         }) + when(branch = 'master'),
@@ -85,7 +85,7 @@ local configurePipelines(steps, when, env, utils) = [
 
         // promote build from any branch, because it's manual
         steps.release({
-          npmTokenSecret: 'NPM_AUTHENTICATION_TOKEN',
+          npmTokenSecret: 'NPM_PUBLISH_TOKEN',
           version: ['yarn version:graduate'],
           publish: [
             'yarn publish:tagged --dist-tag ${DRONE_DEPLOY_TO}',

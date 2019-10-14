@@ -24,17 +24,16 @@ local pipelineBuilder = function (steps, when, env, utils, templates) [
       utils.join([
         steps.slack(templates.continuousIntegration.buildStarted, 'notify-start'),
         createBuildSteps(steps),
-        steps.custom('amend-commit-message', 'drone/git', 'sh .ci/amend-commit.sh') + isPublishable,
 
         // publish prereleases from every master build
         steps.release(
         {
+          amendCommits: true,
           npmTokenSecret: 'NPM_PUBLISH_TOKEN',
-          version: ['version:prerelease --preid next --no-push --amend --yes'],
-//          publish: ['publish:tagged --dist-tag next --yes'],
+          version: 'version:prerelease --preid next --yes',
+//          publish: 'publish:tagged --dist-tag next --yes',
         }) + isPublishable,
 
-        steps.custom('push-tags', 'drone/git', 'sh .ci/push-tags.sh') + isPublishable,
         steps.slack(templates.continuousIntegration.buildCompleted, 'notify-complete') + when(status = ['success', 'failure']),
       ]),
 
@@ -56,10 +55,8 @@ local pipelineBuilder = function (steps, when, env, utils, templates) [
         // promote build from any branch, because it's manual
         steps.release({
           npmTokenSecret: 'NPM_PUBLISH_TOKEN',
-          version: ['version:graduate --yes'],
-          publish: [
-            'publish:tagged --dist-tag ${DRONE_DEPLOY_TO} --yes',
-          ]
+          version: 'version:graduate --yes',
+          publish: 'publish:tagged --dist-tag ${DRONE_DEPLOY_TO} --yes',
         }),
 
         steps.slack(templates.promotion.buildCompleted, 'notify-complete')
@@ -316,8 +313,8 @@ local __yarnStepBuilder(name, commands = [name], config = {}) = {
       name: name,
       image: pipelineConfig.nodeImage,
       commands:
-        [': *** yarn -- running commands: [' + std.join(', ', commands) + ']'] +
-        std.map(yarnStepBuilder.createCommand, commands),
+        [': *** yarn -- running commands: [' + std.join(', ', __.castArray(commands)) + ']'] +
+        std.map(yarnStepBuilder.createCommand, __.castArray(commands)),
     }
   ],
 };
@@ -385,6 +382,7 @@ local __slackStepBuilder(message = null, stepName = 'slack', channelOverride = n
 local __releaseStepBuilder(releaseConfig = {}) = {
   local hasVersionConfig() = !__.isNullOrEmpty(__.get(releaseConfig, 'version')),
   local hasPublishConfig() = !__.isNullOrEmpty(__.get(releaseConfig, 'publish')),
+  local amendCommits = __.get(releaseConfig, 'amendCommits', false),
   local npmTokenSecret = __.get(releaseConfig, 'npmTokenSecret'),
 
   validate: function (pipelineConfig)
@@ -395,9 +393,24 @@ local __releaseStepBuilder(releaseConfig = {}) = {
     }),
 
   build: function (pipelineConfig)
-    local createYarnSteps(stepName, commands) = __yarnStepBuilder(std.join('-', ['release', stepName]), commands).build(pipelineConfig);
-    local buildVersionSteps() = if std.objectHas(releaseConfig, 'version') then createYarnSteps('version', releaseConfig.version);
-    local buildPublishSteps() = if std.objectHas(releaseConfig, 'publish') then createYarnSteps('publish', releaseConfig.publish);
+    local createYarnStep(stepName, command) =
+      __yarnStepBuilder(std.join('-', ['release', stepName]), command).build(pipelineConfig);
+    local createCustomStep(stepName, image, command) =
+      __customStepBuilder(std.join('-', ['release', stepName]), image, command).build(pipelineConfig);
+
+    local buildPublishSteps() = if std.objectHas(releaseConfig, 'publish')
+      then createYarnStep('publish', releaseConfig.publish);
+    local buildVersionSteps() =
+      if !std.objectHas(releaseConfig, 'version') then null
+        else
+          if amendCommits then
+            createCustomStep('version', pipelineConfig.nodeImage, [
+              'sh .ci/amend-commit.sh',
+              releaseConfig.version + ' --no-push --amend --no-changelog',
+              'sh .ci/push-tags.sh'
+            ])
+          else createYarnStep('version', releaseConfig.version);
+
     __.join([
       if (hasPublishConfig()) then __npmAuthStepBuilder(npmTokenSecret).build(pipelineConfig),
       __customStepBuilder('fetch-tags', 'drone/git', 'git fetch --tags').build(pipelineConfig),

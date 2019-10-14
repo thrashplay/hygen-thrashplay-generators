@@ -1,41 +1,3 @@
-local templates = {
-  local droneHost = 'https://drone.thrashplay.com',
-
-  continuousIntegration: {
-    local buildUrl = '%s/{{repo.owner}}/{{repo.name}}/{{build.number}}' % droneHost,
-    local commitUrl = '%s/link/{{repo.owner}}/{{repo.name}}/commit/{{build.commit}}' % droneHost,
-
-    buildStarted: @':arrow_forward: Started <%s|{{repo.name}} build #{{build.number}}> on _{{build.branch}}_' % buildUrl,
-    buildCompleted:
-      '{{#success build.status}}\n'+
-      '  :+1: *<%s|BUILD SUCCESS: #{{build.number}}>*\n' % buildUrl +
-      '{{else}}\n' +
-      '  :octagonal_sign: *<%s|BUILD FAILURE: #{{build.number}}>*\n' % buildUrl +
-      '{{/success}}\n' +
-      '\n' +
-      'Project: *{{repo.name}}*\n' +
-      'Triggered by: commit to _{{build.branch}}_ (*<%s|{{truncate build.commit 8}}>*)\n' % commitUrl +
-      '\n' +
-      '```{{build.message}}```'
-  },
-  promotion: {
-    local linkedSha = '*<%s/link/{{repo.owner}}/{{repo.name}}/commit/{{build.commit}}|{{repo.name}}@{{truncate build.commit 8}}>*' % droneHost,
-    local buildNumberString = '(<%s/{{repo.owner}}/{{repo.name}}/{{build.number}}|Build #{{build.number}}>)' % droneHost,
-
-    buildStarted: ':arrow_up: Promoting %s to _{{build.deployTo}}_. %s' % [linkedSha, buildNumberString],
-    buildCompleted:
-      '{{#success build.status}}\n' +
-      '  :checkered_flag: Successfully promoted %s to _{{build.deployTo}}_. %s\n' % [linkedSha, buildNumberString] +
-      '{{else}}\n' +
-      '  :octagonal_sign: Failed to promote %s to _{{build.deployTo}}_. %s\n' % [linkedSha, buildNumberString] +
-      '{{/success}}\n' +
-      '\n' +
-      'Build message:\n' +
-      '\n' +
-      '```{{build.message}}```\n'
-  },
-};
-
 local slackConfig() = {
   webhookSecret: 'SLACK_NOTIFICATION_WEBHOOK',
   channel: 'devops',
@@ -51,7 +13,7 @@ local createBuildSteps(steps) = [
   steps.yarn('test'),
 ];
 
-local configurePipelines(steps, when, env, utils) = [
+local pipelineBuilder = function (steps, when, env, utils, templates) [
   {
     local isPublishable = when(branch = 'master'),
 
@@ -73,13 +35,9 @@ local configurePipelines(steps, when, env, utils) = [
 
         steps.custom(
           'push-tags',
-          'drone/git',
-          [
-            // add a [skip ci] message to prevent retriggering this build, and then force-push the tags
-            // very safe!! honest!
-            'git commit --amend -m "$(git log --format=%B -n1) [skip ci]"',
-            'git push --no-verify --follow-tags --force-with-lease --set-upstream origin master'
-          ]) + isPublishable,
+          'node:lts',
+          '/bin/bash .ci/ci-push-tags'
+        ) + isPublishable,
 
         steps.slack(templates.continuousIntegration.buildCompleted, 'notify-complete')
           + when(status = ['success', 'failure']),
@@ -120,6 +78,46 @@ local configurePipelines(steps, when, env, utils) = [
     }
   },
 ];
+
+local templates = {
+  local droneHost = 'https://drone.thrashplay.com',
+
+  continuousIntegration: {
+    local buildUrl = '%s/{{repo.owner}}/{{repo.name}}/{{build.number}}' % droneHost,
+    local commitUrl = '%s/link/{{repo.owner}}/{{repo.name}}/commit/{{build.commit}}' % droneHost,
+
+    buildStarted: @':arrow_forward: Started <%s|{{repo.name}} build #{{build.number}}> on _{{build.branch}}_' % buildUrl,
+    buildCompleted:
+      '{{#success build.status}}\n'+
+      '  :+1: *<%s|BUILD SUCCESS: #{{build.number}}>*\n' % buildUrl +
+      '{{else}}\n' +
+      '  :octagonal_sign: *<%s|BUILD FAILURE: #{{build.number}}>*\n' % buildUrl +
+      '{{/success}}\n' +
+      '\n' +
+      'Project: *{{repo.name}}*\n' +
+      'Triggered by: commit to _{{build.branch}}_ (*<%s|{{truncate build.commit 8}}>*)\n' % commitUrl +
+      '\n' +
+      '```{{build.message}}```'
+  },
+  promotion: {
+    local linkedSha = '*<%s/link/{{repo.owner}}/{{repo.name}}/commit/{{build.commit}}|{{repo.name}}@{{truncate build.commit 8}}>*' % droneHost,
+    local buildNumberString = '(<%s/{{repo.owner}}/{{repo.name}}/{{build.number}}|Build #{{build.number}}>)' % droneHost,
+
+    buildStarted: ':arrow_up: Promoting %s to _{{build.deployTo}}_. %s' % [linkedSha, buildNumberString],
+    buildCompleted:
+      '{{#success build.status}}\n' +
+      '  :checkered_flag: Successfully promoted %s to _{{build.deployTo}}_. %s\n' % [linkedSha, buildNumberString] +
+      '{{else}}\n' +
+      '  :octagonal_sign: Failed to promote %s to _{{build.deployTo}}_. %s\n' % [linkedSha, buildNumberString] +
+      '{{/success}}\n' +
+      '\n' +
+      'Build message:\n' +
+      '\n' +
+      '```{{build.message}}```\n'
+  },
+};
+
+local configurePipelines(steps, when, env, utils) = pipelineBuilder(steps, when, env, utils, templates);
 
 // !!! BEGIN AUTO-GENERATED CONFIGURATION !!!
 // !!! [TPD/DSL] v0.1.0-alpha.0

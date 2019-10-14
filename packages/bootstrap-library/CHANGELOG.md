@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.2.0-next.12](https://github.com/thrashplay/thrashplay-app-creators/compare/@thrashplay/bootstrap-library@0.1.2-next.3...@thrashplay/bootstrap-library@0.2.0-next.12) (2019-10-14)
+
+
+### Bug Fixes
+
+* Moved ci-specific configuration into drone jsonnet instead of package.json. ([5137d66](https://github.com/thrashplay/thrashplay-app-creators/commit/5137d66))
+* Temporarily testing lerna behavior with old package.json versions. ([d1220c9](https://github.com/thrashplay/thrashplay-app-creators/commit/d1220c9))
+
+
+### Features
+
+* Update build configuration to push tags as amended previous commit. ([8c99a38](https://github.com/thrashplay/thrashplay-app-creators/commit/8c99a38))
+* Update build configuration to push tags as amended previous commit. [skip ci] ([d1b93f5](https://github.com/thrashplay/thrashplay-app-creators/commit/d1b93f5))
+
+
+
+
+
 # [0.2.0-next.10](https://github.com/thrashplay/thrashplay-app-creators/compare/@thrashplay/bootstrap-library@0.1.2-next.3...@thrashplay/bootstrap-library@0.2.0-next.10) (2019-10-14)
 
 

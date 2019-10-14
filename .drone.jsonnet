@@ -399,6 +399,7 @@ local __releaseStepBuilder(releaseConfig = {}) = {
     local buildPublishSteps() = if std.objectHas(releaseConfig, 'publish') then createYarnSteps('publish', releaseConfig.publish);
     __.join([
       if (hasPublishConfig()) then __npmAuthStepBuilder(npmTokenSecret).build(pipelineConfig),
+      __customStepBuilder('fetch-tags', 'drone/git', 'git fetch --tags').build(pipelineConfig),
       buildVersionSteps(),
       buildPublishSteps()
     ]),

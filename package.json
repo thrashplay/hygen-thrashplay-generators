@@ -51,6 +51,6 @@
     "template": "cross-env HYGEN_TMPLS=packages/bootstrap-library/_templates yarn hygen",
     "test": "echo No files in project to test!",
     "version:graduate": "yarn lerna version --conventional-graduate",
-    "version:prerelease": "yarn lerna version --conventional-prerelease --loglevel=9"
+    "version:prerelease": "yarn lerna version --conventional-prerelease"
   }
 }

@@ -45,7 +45,7 @@ local createBuildSteps(steps) = [
   steps.yarn('install', ['install --frozen-lockfile --non-interactive']),
   steps.yarn('bootstrap'),
 
-  steps.yarn('precheck', ['commitlint:last', 'lint']),
+  steps.yarn('precheck', ['commitlint --verbose --from HEAD~1 --to HEAD', 'lint']),
   steps.yarn('build'),
 
   steps.yarn('test'),

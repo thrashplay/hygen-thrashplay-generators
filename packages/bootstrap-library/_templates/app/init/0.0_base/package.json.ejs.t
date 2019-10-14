@@ -43,11 +43,10 @@ to: <%= projectDir %>/package.json
     "bootstrap": "yarn lerna bootstrap",
     "build": "yarn clean && yarn lerna run build",
     "clean": "yarn lerna run clean",
-    "commitlint:last": "yarn commitlint --verbose --from HEAD~1 --to HEAD",
-    "lint": "eslint --cache --report-unused-disable-directives \"**/*.ts\" \"**/*.js\" \"**/*.json\" \"scripts/*\"",
-    "release": "yarn lerna publish --yes --conventional-commits",
-    "release:graduate": "yarn release --conventional-graduate",
-    "release:pre": "yarn release --conventional-prerelease --preid ${PRERELEASE_ID} --dist-tag ${PRERELEASE_ID}",
-    "test": "yarn lerna run test"
+    "lint": "echo No files in project to lint!",
+    "publish:tagged": "yarn lerna publish from-git",
+    "test": "echo No files in project to test!",
+    "version:graduate": "yarn lerna version --conventional-graduate",
+    "version:prerelease": "yarn lerna version --conventional-prerelease"
   },
 }

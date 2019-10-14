@@ -3,6 +3,124 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.2.0-next.9](https://github.com/thrashplay/thrashplay-app-creators/compare/@thrashplay/bootstrap-library@0.1.2-next.3...@thrashplay/bootstrap-library@0.2.0-next.9) (2019-10-14)
+
+
+### Features
+
+* Update build configuration to push tags as amended previous commit. ([beebff5](https://github.com/thrashplay/thrashplay-app-creators/commit/beebff5))
+
+
+
+
+
+# [0.2.0-next.8](https://github.com/thrashplay/thrashplay-app-creators/compare/@thrashplay/bootstrap-library@0.1.2-next.3...@thrashplay/bootstrap-library@0.2.0-next.8) (2019-10-14)
+
+
+### Features
+
+* Update build configuration to push tags as amended previous commit. ([7153ff1](https://github.com/thrashplay/thrashplay-app-creators/commit/7153ff1))
+
+
+
+
+
+# [0.2.0-next.7](https://github.com/thrashplay/thrashplay-app-creators/compare/@thrashplay/bootstrap-library@0.1.2-next.3...@thrashplay/bootstrap-library@0.2.0-next.7) (2019-10-14)
+
+
+### Features
+
+* Update build configuration to push tags as amended previous commit. ([3d0e492](https://github.com/thrashplay/thrashplay-app-creators/commit/3d0e492))
+
+
+
+
+
+# [0.2.0-next.6](https://github.com/thrashplay/thrashplay-app-creators/compare/@thrashplay/bootstrap-library@0.1.2-next.3...@thrashplay/bootstrap-library@0.2.0-next.6) (2019-10-14)
+
+
+### Features
+
+* Update build configuration to push tags as amended previous commit. ([1e966d6](https://github.com/thrashplay/thrashplay-app-creators/commit/1e966d6))
+
+
+
+
+
+# [0.2.0-next.5](https://github.com/thrashplay/thrashplay-app-creators/compare/@thrashplay/bootstrap-library@0.1.2-next.3...@thrashplay/bootstrap-library@0.2.0-next.5) (2019-10-14)
+
+
+### Features
+
+* Update build configuration to push tags as amended previous commit. ([58a88a5](https://github.com/thrashplay/thrashplay-app-creators/commit/58a88a5))
+
+
+
+
+
+# [0.2.0-next.4](https://github.com/thrashplay/thrashplay-app-creators/compare/@thrashplay/bootstrap-library@0.1.2-next.3...@thrashplay/bootstrap-library@0.2.0-next.4) (2019-10-14)
+
+
+### Features
+
+* Update build configuration to push tags as amended previous commit. ([453c7ba](https://github.com/thrashplay/thrashplay-app-creators/commit/453c7ba))
+
+
+
+
+
+# [0.2.0-next.3](https://github.com/thrashplay/thrashplay-app-creators/compare/@thrashplay/bootstrap-library@0.1.2-next.3...@thrashplay/bootstrap-library@0.2.0-next.3) (2019-10-14)
+
+
+### Features
+
+* Update build configuration to push tags as amended previous commit. ([ec70fac](https://github.com/thrashplay/thrashplay-app-creators/commit/ec70fac))
+
+
+
+
+
+# [0.2.0-next.2](https://github.com/thrashplay/thrashplay-app-creators/compare/@thrashplay/bootstrap-library@0.1.2-next.3...@thrashplay/bootstrap-library@0.2.0-next.2) (2019-10-14)
+
+
+### Features
+
+* Update build configuration to push tags as amended previous commit. ([d142f5f](https://github.com/thrashplay/thrashplay-app-creators/commit/d142f5f))
+
+
+
+
+
+# [0.2.0-next.1](https://github.com/thrashplay/thrashplay-app-creators/compare/@thrashplay/bootstrap-library@0.1.2-next.3...@thrashplay/bootstrap-library@0.2.0-next.1) (2019-10-14)
+
+
+### Features
+
+* Update build configuration to push tags as amended previous commit. ([2d8857b](https://github.com/thrashplay/thrashplay-app-creators/commit/2d8857b))
+
+
+
+
+
+# [0.2.0-next.0](https://github.com/thrashplay/thrashplay-app-creators/compare/@thrashplay/bootstrap-library@0.1.2-next.3...@thrashplay/bootstrap-library@0.2.0-next.0) (2019-10-14)
+
+
+### Features
+
+* Update build configuration to push tags as amended previous commit. ([6ff1294](https://github.com/thrashplay/thrashplay-app-creators/commit/6ff1294))
+
+
+
+
+
+## [0.1.2-next.5](https://github.com/thrashplay/thrashplay-app-creators/compare/@thrashplay/bootstrap-library@0.1.2-next.3...@thrashplay/bootstrap-library@0.1.2-next.5) (2019-10-14)
+
+**Note:** Version bump only for package @thrashplay/bootstrap-library
+
+
+
+
+
 ## [0.1.2-next.3](https://github.com/thrashplay/thrashplay-app-creators/compare/@thrashplay/bootstrap-library@0.1.2-next.2...@thrashplay/bootstrap-library@0.1.2-next.3) (2019-10-14)
 
 **Note:** Version bump only for package @thrashplay/bootstrap-library

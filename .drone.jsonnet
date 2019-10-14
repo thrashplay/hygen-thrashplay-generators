@@ -38,7 +38,7 @@ local templates = {
 
 local slackConfig() = {
   webhookSecret: 'SLACK_NOTIFICATION_WEBHOOK',
-  channel: 'automation',
+  channel: 'devops',
 };
 
 local createBuildSteps(steps) = [
@@ -71,7 +71,7 @@ local configurePipelines(steps, when, env, utils) = [
 //          publish: ['publish:tagged --dist-tag next --yes'],
         }) + isPublishable,
 
-        steps.custom('push-tags', 'alpine/git', 'push --force-with-lease') + isPublishable,
+        steps.custom('push-tags', 'drone/git', 'git push --force-with-lease --set-upstream origin master') + isPublishable,
 
         steps.slack(templates.continuousIntegration.buildCompleted, 'notify-complete')
           + when(status = ['success', 'failure']),

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.2.0-next.10](https://github.com/thrashplay/thrashplay-app-creators/compare/@thrashplay/bootstrap-library@0.1.2-next.3...@thrashplay/bootstrap-library@0.2.0-next.10) (2019-10-14)
+
+
+### Features
+
+* Update build configuration to push tags as amended previous commit. ([8c99a38](https://github.com/thrashplay/thrashplay-app-creators/commit/8c99a38))
+
+
+
+
+
 # [0.2.0-next.9](https://github.com/thrashplay/thrashplay-app-creators/compare/@thrashplay/bootstrap-library@0.1.2-next.3...@thrashplay/bootstrap-library@0.2.0-next.9) (2019-10-14)
 
 

@@ -71,7 +71,15 @@ local configurePipelines(steps, when, env, utils) = [
 //          publish: ['publish:tagged --dist-tag next --yes'],
         }) + isPublishable,
 
-        steps.custom('push-tags', 'drone/git', 'git push --force-with-lease --set-upstream origin master') + isPublishable,
+        steps.custom(
+          'push-tags',
+          'drone/git',
+          [
+            // add a [skip ci] message to prevent retriggering this build, and then force-push the tags
+            // very safe!! honest!
+            'git commit --amend -m "$(git log --format=%B -n1) [skip ci]"',
+            'git push --no-verify --follow-tags --force-with-lease --set-upstream origin master'
+          ]) + isPublishable,
 
         steps.slack(templates.continuousIntegration.buildCompleted, 'notify-complete')
           + when(status = ['success', 'failure']),

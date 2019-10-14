@@ -153,16 +153,16 @@ local templates = {
   promotion(releaseChannel): {
     buildStarted:
       ':arrow_up: *<%s|STARTING {{repo.name}} #{{build.number}}>*\n' % buildUrl +
-      'Promoting: branch _{build.branch}}_ to channel _%s_\n' % releaseChannel,
+      'Promoting: branch _{{build.branch}}_ to channel _%s_\n' % releaseChannel,
     buildCompleted:
       '{{#success build.status}}\n' +
       '  :checkered_flag: *<%s|BUILD SUCCESS: #{{build.number}}>*\n' % buildUrl +
       '  Project: _{{repo.name}}_\n' +
-      "  Promoted: branch _{build.branch}}_ to channel _{%s_\n" % releaseChannel +
+      "  Promoted: branch _{{build.branch}}_ to channel _{%s_\n" % releaseChannel +
       '{{else}}\n' +
       '  :octagonal_sign: *<%s|BUILD FAILED: #{{build.number}}>*\n' % buildUrl +
       '  Project: _{{repo.name}}_\n' +
-      "  Failed: Promoting branch _{build.branch}}_ to channel _%s_\n" % releaseChannel +
+      "  Failed: Promoting branch _{{build.branch}}_ to channel _%s_\n" % releaseChannel +
       '{{/success}}\n'
   },
 };
@@ -465,7 +465,7 @@ local __releaseStepBuilder(releaseConfig = {}) = {
         'npx lerna exec --stream --no-bail --concurrency 1 -- ' +
         'PKG_VERSION=$(npm v . dist-tags.%s); ' % referenceTag +
         '[ -n "$PKG_VERSION" ] && ' +
-          '( npm dist-tag add ${LERNA_PACKAGE_NAME}@${PKG_VERSION} %s' % tagToAdd;
+          '( npm dist-tag add ${LERNA_PACKAGE_NAME}@${PKG_VERSION} %s )' % tagToAdd;
 
       if std.objectHas(releaseConfig, 'publish') then createCustomStep('publish', pipelineConfig.nodeImage,
         __.join([

@@ -300,7 +300,7 @@ local __releaseStepBuilder(releaseConfig = {}) = {
         'npx lerna exec --stream --no-bail --concurrency 1 -- ' +
         'PKG_VERSION=$(npm v . dist-tags.%s); ' % referenceTag +
         '[ -n "$PKG_VERSION" ] && ' +
-          '( npm dist-tag add ${LERNA_PACKAGE_NAME}@${PKG_VERSION} %s' % tagToAdd;
+          '( npm dist-tag add ${LERNA_PACKAGE_NAME}@${PKG_VERSION} %s )' % tagToAdd;
 
       if std.objectHas(releaseConfig, 'publish') then createCustomStep('publish', pipelineConfig.nodeImage,
         __.join([

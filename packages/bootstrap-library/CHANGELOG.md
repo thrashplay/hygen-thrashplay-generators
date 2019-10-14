@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.2-next.2](https://github.com/thrashplay/thrashplay-app-creators/compare/@thrashplay/bootstrap-library@0.1.2-next.1...@thrashplay/bootstrap-library@0.1.2-next.2) (2019-10-14)
+
+
+### Bug Fixes
+
+* Removed old data from drone template. ([409cf5f](https://github.com/thrashplay/thrashplay-app-creators/commit/409cf5f))
+
+
+
+
+
 ## [0.1.2-next.1](https://github.com/thrashplay/thrashplay-app-creators/compare/@thrashplay/bootstrap-library@0.1.2-next.0...@thrashplay/bootstrap-library@0.1.2-next.1) (2019-10-14)
 
 **Note:** Version bump only for package @thrashplay/bootstrap-library

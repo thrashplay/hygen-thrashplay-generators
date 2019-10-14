@@ -112,32 +112,6 @@ local configurePipelines(steps, when, env, utils) = [
   },
 ];
 
-    notifications: {
-      slack: {
-      webhookSecret: 'SLACK_NOTIFICATION_WEBHOOK',
-      channel: 'automation',
-
-      startMessage: |||
-        :arrow_forward: Started <%= name %> build #{{build.number}} on _{{build.branch}}_.
-      |||,
-
-      completeMessage: |||
-        {{#success build.status}}
-          :+1: *BUILD SUCCESS: #{{build.number}}*
-        {{else}}
-          :octagonal_sign: *BUILD FAILURE: #{{build.number}}*
-        {{/success}}
-
-        Project: *{{repo.name}}*
-        Triggered by: commit to _{{build.branch}}_ (*{{truncate build.commit 8}}*)
-
-        ```{{build.message}}```
-      |||
-      },
-    },
-  },
-];
-
 // !!! BEGIN AUTO-GENERATED CONFIGURATION !!!
 // !!! [TPD/DSL] v0.1.0-alpha.0
 // !!! The following content is not meant to be edited by hand

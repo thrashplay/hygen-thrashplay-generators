@@ -27,6 +27,7 @@ local pipelineBuilder = function (steps, when, env, utils, templates) [
       utils.join([
         steps.slack(templates.continuousIntegration.buildStarted, 'notify-start'),
         createBuildSteps(steps),
+        steps.custom('amend-commit-message', 'drone/git', 'sh .ci/amend-commit.sh') + isPublishable,
 
         // publish prereleases from every master build
         steps.release(
@@ -36,14 +37,8 @@ local pipelineBuilder = function (steps, when, env, utils, templates) [
 //          publish: ['publish:tagged --dist-tag next --yes'],
         }) + isPublishable,
 
-        steps.custom(
-          'push-tags',
-          'node:lts',
-          '/bin/bash .ci/ci-push-tags'
-        ) + isPublishable,
-
-        steps.slack(templates.continuousIntegration.buildCompleted, 'notify-complete')
-          + when(status = ['success', 'failure']),
+        steps.custom('push-tags', 'drone/git', 'sh .ci/push-tags.sh') + isPublishable,
+        steps.slack(templates.continuousIntegration.buildCompleted, 'notify-complete') + when(status = ['success', 'failure']),
       ]),
 
     trigger: {

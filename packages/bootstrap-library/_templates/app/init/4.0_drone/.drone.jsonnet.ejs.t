@@ -97,7 +97,6 @@ local configurePipelines(steps, when, env, utils) = [
           version: ['version:graduate'],
           publish: [
             'publish:tagged --dist-tag ${DRONE_DEPLOY_TO} --yes',
-            'publish:tagged --dist-tag latest  --yes',
           ]
         }),
 

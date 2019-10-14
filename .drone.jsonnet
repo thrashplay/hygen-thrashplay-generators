@@ -1,3 +1,7 @@
+local droneHost = 'https://drone.thrashplay.com';
+// the release channel to promote builds too
+local releaseChannel = 'alpha';
+
 local slackConfig() = {
   webhookSecret: 'SLACK_NOTIFICATION_WEBHOOK',
   channel: 'devops',
@@ -12,9 +16,6 @@ local createBuildSteps(steps) = [
 
   steps.yarn('test'),
 ];
-
-// the release channel to promote builds too
-local releaseChannel = 'alpha';
 
 local pipelineBuilder = function (steps, when, env, utils, templates) [
   {
@@ -80,8 +81,11 @@ local pipelineBuilder = function (steps, when, env, utils, templates) [
 
     steps:
       utils.join([
-        steps.slack(templates.promotion.buildStarted, 'notify-start'),
-        createBuildSteps(steps),
+        steps.slack(templates.promotion(releaseChannel).buildStarted, 'notify-start'),
+        steps.yarn('install', ['install --frozen-lockfile --non-interactive']),
+        steps.yarn('bootstrap'),
+        steps.yarn('build'),
+
 
         // promote build from any branch, because it's manual
         steps.release({
@@ -97,7 +101,7 @@ local pipelineBuilder = function (steps, when, env, utils, templates) [
           }
         }),
 
-        steps.slack(templates.promotion.buildCompleted, 'notify-complete')
+        steps.slack(templates.promotion(releaseChannel).buildCompleted, 'notify-complete')
           + when(status = ['success', 'failure']),
       ]),
 
@@ -110,7 +114,6 @@ local pipelineBuilder = function (steps, when, env, utils, templates) [
 ];
 
 local templates = {
-  local droneHost = 'https://drone.thrashplay.com',
   local buildUrl = '%s/{{repo.owner}}/{{repo.name}}/{{build.number}}' % droneHost,
 
   continuousIntegration: {
@@ -147,19 +150,19 @@ local templates = {
       "  Failed: Publishing {{build.tag}} to channel _%s_\n" % releaseChannel +
       '{{/success}}\n'
   },
-  promotion: {
+  promotion(releaseChannel): {
     buildStarted:
       ':arrow_up: *<%s|STARTING {{repo.name}} #{{build.number}}>*\n' % buildUrl +
-      'Promoting: {{build.tag}} to channel _{{build.deployTo}}_\n',
+      'Promoting: {{build.tag}} to channel _%s_\n' % releaseChannel,
     buildCompleted:
       '{{#success build.status}}\n' +
       '  :checkered_flag: *<%s|BUILD SUCCESS: #{{build.number}}>*\n' % buildUrl +
       '  Project: _{{repo.name}}_\n' +
-      "  Promoted: {{build.tag}} to channel _{{build.deployTo}}_\n" +
+      "  Promoted: {{build.tag}} to channel _{%s_\n" % releaseChannel +
       '{{else}}\n' +
       '  :octagonal_sign: *<%s|BUILD FAILED: #{{build.number}}>*\n' % buildUrl +
       '  Project: _{{repo.name}}_\n' +
-      "  Failed: Promoting {{build.tag}} to channel _{{build.deployTo}}_\n" +
+      "  Failed: Promoting {{build.tag}} to channel _%s_\n" % releaseChannel +
       '{{/success}}\n'
   },
 };

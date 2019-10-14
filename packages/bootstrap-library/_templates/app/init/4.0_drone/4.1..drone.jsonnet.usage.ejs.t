@@ -156,16 +156,16 @@ local templates = {
   promotion(releaseChannel): {
     buildStarted:
       ':arrow_up: *<%s|STARTING {{repo.name}} #{{build.number}}>*\n' % buildUrl +
-      'Promoting: {{build.tag}} to channel _%s_\n' % releaseChannel,
+      'Promoting: branch _{build.branch}}_ to channel _%s_\n' % releaseChannel,
     buildCompleted:
       '{{#success build.status}}\n' +
       '  :checkered_flag: *<%s|BUILD SUCCESS: #{{build.number}}>*\n' % buildUrl +
       '  Project: _{{repo.name}}_\n' +
-      "  Promoted: {{build.tag}} to channel _{%s_\n" % releaseChannel +
+      "  Promoted: branch _{build.branch}}_ to channel _{%s_\n" % releaseChannel +
       '{{else}}\n' +
       '  :octagonal_sign: *<%s|BUILD FAILED: #{{build.number}}>*\n' % buildUrl +
       '  Project: _{{repo.name}}_\n' +
-      "  Failed: Promoting {{build.tag}} to channel _%s_\n" % releaseChannel +
+      "  Failed: Promoting branch _{build.branch}}_ to channel _%s_\n" % releaseChannel +
       '{{/success}}\n'
   },
 };

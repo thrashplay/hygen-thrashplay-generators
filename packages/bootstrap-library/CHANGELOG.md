@@ -11,6 +11,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+
 ## [0.1.2-next.2](https://github.com/thrashplay/thrashplay-app-creators/compare/@thrashplay/bootstrap-library@0.1.2-next.1...@thrashplay/bootstrap-library@0.1.2-next.2) (2019-10-14)
 
 

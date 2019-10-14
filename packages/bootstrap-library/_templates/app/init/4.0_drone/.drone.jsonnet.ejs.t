@@ -1,6 +1,87 @@
 ---
 to: <% if (ciType === 'drone') { %><%= projectDir %>/.drone.jsonnet<% } else { %><%= projectDir %>/.drone.not.jsonnet<% } %>
 ---
+local slackConfig() = {
+  webhookSecret: 'SLACK_NOTIFICATION_WEBHOOK',
+  channel: 'devops',
+};
+
+local createBuildSteps(steps) = [
+  steps.yarn('install', ['install --frozen-lockfile --non-interactive']),
+  steps.yarn('bootstrap'),
+
+  steps.yarn('precheck', ['commitlint --verbose --from HEAD~1 --to HEAD', 'lint']),
+  steps.yarn('build'),
+
+  steps.yarn('test'),
+];
+
+local pipelineBuilder = function (steps, when, env, utils, templates) [
+  {
+    local isPublishable = when(branch = 'master'),
+
+    name: 'continuous-integration',
+    slack: slackConfig(),
+
+    steps:
+      utils.join([
+        steps.slack(templates.continuousIntegration.buildStarted, 'notify-start'),
+        createBuildSteps(steps),
+
+        // publish prereleases from every master build
+        steps.release(
+        {
+          npmTokenSecret: 'NPM_PUBLISH_TOKEN',
+          version: ['version:prerelease --preid next --no-push --amend --yes'],
+//          publish: ['publish:tagged --dist-tag next --yes'],
+        }) + isPublishable,
+
+        steps.custom(
+          'push-tags',
+          'node:lts',
+          '/bin/bash .ci/ci-push-tags'
+        ) + isPublishable,
+
+        steps.slack(templates.continuousIntegration.buildCompleted, 'notify-complete')
+          + when(status = ['success', 'failure']),
+      ]),
+
+    trigger: {
+      event: {
+        include: ['push'],
+      }
+    },
+  },
+  {
+    name: 'promote-build',
+    slack: slackConfig(),
+
+    steps:
+      utils.join([
+        steps.slack(templates.promotion.buildStarted, 'notify-start'),
+        createBuildSteps(steps),
+
+        // promote build from any branch, because it's manual
+        steps.release({
+          npmTokenSecret: 'NPM_PUBLISH_TOKEN',
+          version: ['version:graduate --yes'],
+          publish: [
+            'publish:tagged --dist-tag ${DRONE_DEPLOY_TO} --yes',
+          ]
+        }),
+
+        steps.slack(templates.promotion.buildCompleted, 'notify-complete')
+          + when(status = ['success', 'failure']),
+      ]),
+
+    trigger: {
+      event: {
+        include: ['promote'],
+      }
+    }
+  },
+];
+
 local templates = {
   local droneHost = 'https://PLACEHOLDER_URL',
 
@@ -39,78 +120,7 @@ local templates = {
   },
 };
 
-local slackConfig() = {
-  webhookSecret: 'SLACK_NOTIFICATION_WEBHOOK',
-  channel: 'automation',
-};
-
-local createBuildSteps(steps) = [
-  steps.yarn('install', ['install --frozen-lockfile --non-interactive']),
-  steps.yarn('bootstrap'),
-
-  steps.yarn('precheck', ['commitlint --verbose --from HEAD~1 --to HEAD', 'lint']),
-  steps.yarn('build'),
-
-  steps.yarn('test'),
-];
-
-local configurePipelines(steps, when, env, utils) = [
-  {
-    name: 'continuous-integration',
-    slack: slackConfig(),
-
-    steps:
-      utils.join([
-        steps.slack(templates.continuousIntegration.buildStarted, 'notify-start'),
-        createBuildSteps(steps),
-
-        // publish prereleases from every master build
-        steps.release(
-        {
-          npmTokenSecret: 'NPM_PUBLISH_TOKEN',
-          version: ['version:prerelease --preid next --yes'],
-          publish: ['publish:tagged --dist-tag next --yes'],
-        }) + when(branch = 'master'),
-
-        steps.slack(templates.continuousIntegration.buildCompleted, 'notify-complete')
-          + when(status = ['success', 'failure']),
-      ]),
-
-    trigger: {
-      event: {
-        include: ['push'],
-      }
-    },
-  },
-  {
-    name: 'promote-build',
-    slack: slackConfig(),
-
-    steps:
-      utils.join([
-        steps.slack(templates.promotion.buildStarted, 'notify-start'),
-        createBuildSteps(steps),
-
-        // promote build from any branch, because it's manual
-        steps.release({
-          npmTokenSecret: 'NPM_PUBLISH_TOKEN',
-          version: ['version:graduate'],
-          publish: [
-            'publish:tagged --dist-tag ${DRONE_DEPLOY_TO} --yes',
-          ]
-        }),
-
-        steps.slack(templates.promotion.buildCompleted, 'notify-complete')
-          + when(status = ['success', 'failure']),
-      ]),
-
-    trigger: {
-      event: {
-        include: ['promote'],
-      }
-    }
-  },
-];
+local configurePipelines(steps, when, env, utils) = pipelineBuilder(steps, when, env, utils, templates);
 
 // !!! BEGIN AUTO-GENERATED CONFIGURATION !!!
 // !!! [TPD/DSL] v0.1.0-alpha.0

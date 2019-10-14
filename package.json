@@ -30,6 +30,7 @@
     "husky": "^3.0.9",
     "lerna": "^3.16.4",
     "patch-package": "^6.2.0",
+    "postinstall-postinstall": "^2.0.0",
     "tslint": "^5.20.0",
     "typescript": "^3.6.4"
   },
@@ -46,6 +47,7 @@
     "clean": "yarn lerna run clean",
     "commitlint:last": "yarn commitlint --verbose --from HEAD~1 --to HEAD",
     "lint": "echo No files in project to lint!",
+    "postinstall": "patch-package",
     "publish:tagged": "yarn lerna publish from-git",
     "template": "cross-env HYGEN_TMPLS=packages/bootstrap-library/_templates yarn hygen",
     "test": "echo No files in project to test!",

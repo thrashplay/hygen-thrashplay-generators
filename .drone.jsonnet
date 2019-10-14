@@ -53,6 +53,8 @@ local createBuildSteps(steps) = [
 
 local configurePipelines(steps, when, env, utils) = [
   {
+    local isPublishable = when(branch = 'master'),
+
     name: 'continuous-integration',
     slack: slackConfig(),
 
@@ -65,9 +67,11 @@ local configurePipelines(steps, when, env, utils) = [
         steps.release(
         {
           npmTokenSecret: 'NPM_PUBLISH_TOKEN',
-          version: ['version:prerelease --preid next --yes'],
-          publish: ['publish:tagged --dist-tag next --yes'],
-        }) + when(branch = 'master'),
+          version: ['version:prerelease --preid next --no-push --amend --yes'],
+//          publish: ['publish:tagged --dist-tag next --yes'],
+        }) + isPublishable,
+
+        steps.custom('push-tags', 'alpine/git', 'push --force-with-lease') + isPublishable,
 
         steps.slack(templates.continuousIntegration.buildCompleted, 'notify-complete')
           + when(status = ['success', 'failure']),

@@ -68,8 +68,8 @@ local configurePipelines(steps, when, env, utils) = [
         steps.release(
         {
           npmTokenSecret: 'NPM_PUBLISH_TOKEN',
-          version: ['version:prerelease --preid next'],
-          publish: ['publish:tagged --dist-tag next'],
+          version: ['version:prerelease --preid next --yes'],
+          publish: ['publish:tagged --dist-tag next --yes'],
         }) + when(branch = 'master'),
 
         steps.slack(templates.continuousIntegration.buildCompleted, 'notify-complete')
@@ -96,8 +96,8 @@ local configurePipelines(steps, when, env, utils) = [
           npmTokenSecret: 'NPM_PUBLISH_TOKEN',
           version: ['version:graduate'],
           publish: [
-            'publish:tagged --dist-tag ${DRONE_DEPLOY_TO}',
-            'publish:tagged --dist-tag latest',
+            'publish:tagged --dist-tag ${DRONE_DEPLOY_TO} --yes',
+            'publish:tagged --dist-tag latest  --yes',
           ]
         }),
 

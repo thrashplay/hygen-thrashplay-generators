@@ -1,0 +1,21 @@
+diff --git a/node_modules/@lerna/conventional-commits/lib/update-changelog.js b/node_modules/@lerna/conventional-commits/lib/update-changelog.js
+index e62a332..144ebb0 100644
+--- a/node_modules/@lerna/conventional-commits/lib/update-changelog.js
++++ b/node_modules/@lerna/conventional-commits/lib/update-changelog.js
+@@ -54,6 +54,16 @@ function updateChangelog(pkg, type, { changelogPreset, rootPath, tagPrefix = "v"
+       }
+     }
+ 
++    // From 'conventional-changelog' documentation:
++    // releaseCount (default: 1)
++    //
++    // How many releases of changelog you want to generate. It counts from the
++    // upcoming release. Useful when you forgot to generate any previous
++    // changelog. Set to 0 to regenerate all.
++    //
++    // For our workflow, it's just simpler to always regenerate the whole thing.
++    options.releaseCount = 0
++
+     // generate the markdown for the upcoming release.
+     const changelogStream = conventionalChangelogCore(options, context, gitRawCommitsOpts);
+ 

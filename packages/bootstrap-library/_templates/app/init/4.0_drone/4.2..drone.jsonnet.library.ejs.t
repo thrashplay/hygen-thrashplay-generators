@@ -1,11 +1,11 @@
 ---
 inject: true
-to: <% if (ciType === 'drone') { %><%= projectDir %>/.drone.jsonnet<% } else { %><%= projectDir %>/.drone.not.jsonnet<% } %>
+to: <% if (ciType === 'drone') { %><%= projectDir %>/.drone.jsonnet<% } else { null } %>
 append: true
 ---
 
 // !!! BEGIN AUTO-GENERATED CONFIGURATION !!!
-// !!! [TPD/DSL] v0.1.0-alpha.0
+// !!! [TPD/DSL] v<%= bootstrapVersion %>
 // !!! The following content is not meant to be edited by hand
 // !!! Changes below this line may be overwritten by generators in thrashplay-app-creators
 

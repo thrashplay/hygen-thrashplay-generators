@@ -1,5 +1,5 @@
 ---
-to: <% if (ciType === 'drone') { %><%= projectDir %>/.drone.jsonnet<% } else { %><%= projectDir %>/.drone.not.jsonnet<% } %>
+to: <% if (ciType === 'drone') { %><%= projectDir %>/.drone.jsonnet<% } else { null } %>
 ---
 local slackConfig() = {
   webhookSecret: 'SLACK_NOTIFICATION_WEBHOOK',

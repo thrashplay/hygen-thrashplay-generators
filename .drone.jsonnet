@@ -467,7 +467,7 @@ local __releaseStepBuilder(releaseConfig = {}) = {
       if std.objectHas(releaseConfig, 'publish') then createCustomStep('publish', pipelineConfig.nodeImage,
         __.join([
           // publish command to first channel
-          'lerna publish ' + std.join(' ', __.join([
+          'yarn lerna publish ' + std.join(' ', __.join([
             lernaPublishOptions,
             '--yes',
             '--no-git-reset',

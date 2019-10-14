@@ -15,8 +15,6 @@ local createBuildSteps(steps) = [
 
 local pipelineBuilder = function (steps, when, env, utils, templates) [
   {
-    local isPublishable = when(branch = 'master'),
-
     name: 'continuous-integration',
     slack: slackConfig(),
 
@@ -32,9 +30,7 @@ local pipelineBuilder = function (steps, when, env, utils, templates) [
             amend: true,
             lernaOptions: ['--conventional-prerelease', '--preid', 'next'],
           },
-          npmTokenSecret: 'NPM_PUBLISH_TOKEN',
-//          publish: 'publish:tagged --dist-tag next --yes',
-        }) + isPublishable,
+        }) + when(branch = 'master'),
 
         steps.slack(templates.continuousIntegration.buildCompleted, 'notify-complete') + when(status = ['success', 'failure']),
       ]),
@@ -42,6 +38,35 @@ local pipelineBuilder = function (steps, when, env, utils, templates) [
     trigger: {
       event: {
         include: ['push'],
+      }
+    },
+  },
+  {
+    name: 'publish-tag',
+    slack: slackConfig(),
+
+    steps:
+      utils.join([
+        steps.slack(templates.publishing.buildStarted, 'notify-start'),
+        steps.yarn('install', ['install --frozen-lockfile --non-interactive']),
+        steps.yarn('bootstrap'),
+        steps.yarn('build'),
+
+        // publish prereleases from every master build
+        steps.release(
+        {
+          publish: {
+            npmTokenSecret: 'NPM_PUBLISH_TOKEN',
+            lernaOptions: ['from-git', '--dist-tag', 'next']
+          },
+        }),
+
+        steps.slack(templates.publishing.buildCompleted, 'notify-complete') + when(status = ['success', 'failure']),
+      ]),
+
+    trigger: {
+      event: {
+        include: ['tag'],
       }
     },
   },
@@ -59,7 +84,7 @@ local pipelineBuilder = function (steps, when, env, utils, templates) [
           npmTokenSecret: 'NPM_PUBLISH_TOKEN',
           version: {
             amend: false,
-            lernaOptions: ['--conventional-graduate'],
+            lernaOptions: '--conventional-graduate',
           },
 //          publish: 'publish:tagged --dist-tag ${DRONE_DEPLOY_TO} --yes',
         }),
@@ -95,6 +120,18 @@ local templates = {
       'Triggered by: commit to _{{build.branch}}_ (*<%s|{{truncate build.commit 8}}>*)\n' % commitUrl +
       '\n' +
       '```{{build.message}}```'
+  },
+  publishing: {
+    local linkedSha = '*<%s/link/{{repo.owner}}/{{repo.name}}/commit/{{build.commit}}|{{repo.name}}@{{truncate build.commit 8}}>*' % droneHost,
+    local buildNumberString = '(<%s/{{repo.owner}}/{{repo.name}}/{{build.number}}|Build #{{build.number}}>)' % droneHost,
+
+    buildStarted: ':newspaper: Publishing {{repo.name}}@{{build.tag}} to _next_ release channel. %s' % buildNumberString,
+    buildCompleted:
+      '{{#success build.status}}\n' +
+      '  :checkered_flag: Successfully published {{repo.name}}@{{build.tag}} to _next_ release channel. %s\n' % buildNumberString +
+      '{{else}}\n' +
+      '  :octagonal_sign: Failed to publish {{repo.name}}@{{build.tag}} %s\n' % buildNumberString +
+      '{{/success}}\n'
   },
   promotion: {
     local linkedSha = '*<%s/link/{{repo.owner}}/{{repo.name}}/commit/{{build.commit}}|{{repo.name}}@{{truncate build.commit 8}}>*' % droneHost,
@@ -388,8 +425,9 @@ local __releaseStepBuilder(releaseConfig = {}) = {
   local amendCommits = __.get(releaseConfig, 'version.amend', false),
   local hasVersionConfig() = !__.isNullOrEmpty(__.get(releaseConfig, 'version')),
   local hasPublishConfig() = !__.isNullOrEmpty(__.get(releaseConfig, 'publish')),
-  local lernaVersionOptions = __.get(releaseConfig, 'version.lernaOptions', []),
-  local npmTokenSecret = __.get(releaseConfig, 'npmTokenSecret'),
+  local lernaVersionOptions = __.join([__.get(releaseConfig, 'version.lernaOptions')]),
+  local lernaPublishOptions = __.join([__.get(releaseConfig, 'publish.lernaOptions')]),
+  local npmTokenSecret = __.get(releaseConfig, 'publish.npmTokenSecret'),
 
   validate: function (pipelineConfig)
     local hasVersionOrPublishConfig() = hasVersionConfig() || hasPublishConfig();
@@ -405,7 +443,7 @@ local __releaseStepBuilder(releaseConfig = {}) = {
       __customStepBuilder(std.join('-', ['release', stepName]), image, command).build(pipelineConfig);
 
     local buildPublishSteps() = if std.objectHas(releaseConfig, 'publish')
-      then createYarnStep('publish', releaseConfig.publish);
+      then createYarnStep('publish', 'lerna publish ' + std.join(' ', __.join(lernaPublishOptions)));
     local buildVersionSteps() =
       if !std.objectHas(releaseConfig, 'version') then null
         else

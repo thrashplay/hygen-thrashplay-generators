@@ -79,6 +79,12 @@ local pipelineBuilder = function (steps, when, env, utils, templates) [
     name: 'promote-build',
     slack: slackConfig(),
 
+    // use Drone credentials for publish chores
+    git: {
+      authorEmail: 'drone@thrashplay.com',
+      authorName: 'Drone',
+    },
+
     steps:
       utils.join([
         steps.slack(templates.promotion(releaseChannel).buildStarted, 'notify-start'),

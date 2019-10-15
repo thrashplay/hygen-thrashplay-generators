@@ -65,7 +65,7 @@ local pipelineBuilder = function (steps, when, env, utils, templates) [
         {
           publish: {
             channels: 'next',
-            lernaOptions: 'from-git',
+            lernaOptions: 'from-package',
             npmTokenSecret: 'NPM_PUBLISH_TOKEN',
           },
         }),
@@ -82,6 +82,12 @@ local pipelineBuilder = function (steps, when, env, utils, templates) [
   {
     name: 'promote-build',
     slack: slackConfig(),
+
+    // use Drone credentials for publish chores
+    git: {
+      authorEmail: 'drone@thrashplay.com',
+      authorName: 'Drone',
+    },
 
     steps:
       utils.join([
@@ -162,7 +168,7 @@ local templates = {
       '{{#success build.status}}\n' +
       '  :checkered_flag: *<%s|BUILD SUCCESS: #{{build.number}}>*\n' % buildUrl +
       '  Project: _{{repo.name}}_\n' +
-      "  Promoted: branch _{{build.branch}}_ to channel _{%s_\n" % releaseChannel +
+      "  Promoted: branch _{{build.branch}}_ to channel _%s_\n" % releaseChannel +
       '{{else}}\n' +
       '  :octagonal_sign: *<%s|BUILD FAILED: #{{build.number}}>*\n' % buildUrl +
       '  Project: _{{repo.name}}_\n' +

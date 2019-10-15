@@ -2,7 +2,6 @@
 to: <% if (ciType === 'drone') { %><%= projectDir %>/.drone.jsonnet<% } else { null } %>
 ---
 local droneHost = 'PLACEHOLDER_URL;
-
 // the release channel to promote builds too
 local releaseChannel = 'alpha';
 

@@ -95,7 +95,7 @@ local pipelineBuilder = function (steps, when, env, utils, templates) [
             lernaOptions: '--conventional-graduate',
           },
           publish: {
-            channels: ['latest', releaseChannel],
+            channels: [releaseChannel],
             npmTokenSecret: 'NPM_PUBLISH_TOKEN',
             lernaOptions: 'from-git',
           }

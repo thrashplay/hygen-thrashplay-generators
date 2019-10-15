@@ -2,7 +2,7 @@
   "command": {
     "publish": {
       "conventionalCommits": true,
-      "message": "chore(publish): Publish latest versions [ci skip]."
+      "message": "chore(publish): Promote latest versions [ci skip]."
     },
     "version": {
       "allowBranch": ["master", "develop"],

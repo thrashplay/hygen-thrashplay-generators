@@ -1,8 +1,8 @@
 diff --git a/node_modules/@lerna/conventional-commits/lib/update-changelog.js b/node_modules/@lerna/conventional-commits/lib/update-changelog.js
-index e62a332..144ebb0 100644
+index e62a332..4700c07 100644
 --- a/node_modules/@lerna/conventional-commits/lib/update-changelog.js
 +++ b/node_modules/@lerna/conventional-commits/lib/update-changelog.js
-@@ -54,6 +54,16 @@ function updateChangelog(pkg, type, { changelogPreset, rootPath, tagPrefix = "v"
+@@ -54,6 +54,21 @@ function updateChangelog(pkg, type, { changelogPreset, rootPath, tagPrefix = "v"
        }
      }
  
@@ -13,8 +13,13 @@ index e62a332..144ebb0 100644
 +    // upcoming release. Useful when you forgot to generate any previous
 +    // changelog. Set to 0 to regenerate all.
 +    //
-+    // For our workflow, it's just simpler to always regenerate the whole thing.
++    // This, combined with a custom tag pointer, allow multiple releases worth
++    // of changelogs to be gathered into one set of release notes.
++    //
++    // Downside, is the conventionalChangelogCore bombs out if the tag doesn't
++    // exist. So this feature is somewhat brittle and experimental atm.
 +    options.releaseCount = 0
++    gitRawCommitsOpts.from = 'meta/changelog-pointer'
 +
      // generate the markdown for the upcoming release.
      const changelogStream = conventionalChangelogCore(options, context, gitRawCommitsOpts);

@@ -462,10 +462,7 @@ local __releaseStepBuilder(releaseConfig = {}) = {
 
     local buildPublishSteps() =
       local createTagCommand(referenceTag) = function(tagToAdd)
-        'npx lerna exec --stream --no-bail --concurrency 1 -- ' +
-        'PKG_VERSION=$(npm v . dist-tags.%s); ' % referenceTag +
-        '[ -n "$PKG_VERSION" ] && ' +
-          '( npm dist-tag add ${LERNA_PACKAGE_NAME}@${PKG_VERSION} %s )' % tagToAdd;
+        'sh .ci/tag-npm-packages.sh %s %s' % [referenceTag, tagToAdd];
 
       if std.objectHas(releaseConfig, 'publish') then createCustomStep('publish', pipelineConfig.nodeImage,
         __.join([
@@ -497,12 +494,14 @@ local __releaseStepBuilder(releaseConfig = {}) = {
                 '--no-push',
                 '--yes',
               ])),
-              'sh .ci/push-tags.sh'
+              'sh .ci/push-tags.sh',
+              'sh .ci/bump-changelog-pointer.sh'
             ])
           else
             createCustomStep('version', pipelineConfig.nodeImage, [
               'sh .ci/ensure-changelog-pointer.sh',
-              'yarn lerna version ' + std.join(' ', __.join([lernaVersionOptions, '--yes']))
+              'yarn lerna version ' + std.join(' ', __.join([lernaVersionOptions, '--yes'])),
+              'sh .ci/bump-changelog-pointer.sh'
             ]);
 
     __.join([

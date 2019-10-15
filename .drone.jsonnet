@@ -503,10 +503,7 @@ local __releaseStepBuilder(releaseConfig = {}) = {
             ])
           else
             createCustomStep('version', pipelineConfig.nodeImage, [
-              'sh .ci/ensure-changelog-pointer.sh',
               'yarn lerna version ' + std.join(' ', __.join([lernaVersionOptions, '--yes', '--no-push'])),
-              'sh .ci/bump-changelog-pointer.sh',
-              'sh .ci/push-tags.sh',
             ]);
 
     __.join([

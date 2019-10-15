@@ -503,7 +503,7 @@ local __releaseStepBuilder(releaseConfig = {}) = {
             ])
           else
             createCustomStep('version', pipelineConfig.nodeImage, [
-              'yarn lerna version ' + std.join(' ', __.join([lernaVersionOptions, '--yes', '--no-push'])),
+              'yarn lerna version ' + std.join(' ', __.join([lernaVersionOptions, '--yes'])),
             ]);
 
     __.join([

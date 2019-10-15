@@ -12,4 +12,7 @@ fi
 git status
 
 # Force push the tags and amended message.
-git push --no-verify --follow-tags --force-with-lease=master:${DRONE_COMMIT_SHA} --set-upstream origin master
+git push --no-verify --force-with-lease=master:${DRONE_COMMIT_SHA} --set-upstream origin master
+
+# only push tags if actual commit worked, ie lease wasn't expired
+git push --tags

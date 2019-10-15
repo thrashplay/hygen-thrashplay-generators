@@ -321,7 +321,6 @@ local __releaseStepBuilder(releaseConfig = {}) = {
         else
           if amendCommits then
             createCustomStep('version', pipelineConfig.nodeImage, [
-              'sh .ci/ensure-changelog-pointer.sh',
               'sh .ci/amend-commit.sh',
               'yarn lerna version ' + std.join(' ', __.join([
                 lernaVersionOptions,
@@ -331,7 +330,6 @@ local __releaseStepBuilder(releaseConfig = {}) = {
                 '--yes',
               ])),
               'sh .ci/push-tags.sh',
-              'sh .ci/bump-changelog-pointer.sh'
             ])
           else
             createCustomStep('version', pipelineConfig.nodeImage, [

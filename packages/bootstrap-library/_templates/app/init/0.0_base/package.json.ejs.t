@@ -14,6 +14,7 @@ to: <%= projectDir %>/package.json
   "devDependencies": {
     "@commitlint/cli": "^8.2.0",
     "@commitlint/config-conventional": "^8.2.0",
+    "@thrashplay/eslint-config": "^0.1.0",
     "@typescript-eslint/eslint-plugin": "^2.3.3",
     "@typescript-eslint/eslint-plugin-tslint": "^2.3.3",
     "@typescript-eslint/parser": "^2.3.3",
@@ -43,10 +44,17 @@ to: <%= projectDir %>/package.json
     "bootstrap": "yarn lerna bootstrap",
     "build": "yarn clean && yarn lerna run build",
     "clean": "yarn lerna run clean",
-    "lint": "echo No files in project to lint!",
+    "lint": "yarn eslint --ext .ts,.js,.tsx,.jsx scripts packages",
+    "lint:fix": "yarn eslint --ext .ts,.js,.tsx,.jsx scripts packages --fix",
     "publish:tagged": "yarn lerna publish from-git",
     "test": "echo No files in project to test!",
     "version:graduate": "yarn lerna version --conventional-graduate",
     "version:prerelease": "yarn lerna version --conventional-prerelease"
   },
+  "eslintConfig": {
+  {
+    "extends": [
+      "@thrashplay"
+    ]
+  }
 }

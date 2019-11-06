@@ -1,0 +1,27 @@
+{
+  "name": "@thrashplay/eslint-config",
+  "version": "0.1.0",
+  "description": "eslint configuration for Thrashplay projects",
+  "keywords": [
+    "eslint",
+    "eslintconfig"
+  ],
+  "license": "MIT",
+  "author": "Sean Kleinjung <sean@thrashplay.com>",
+  "homepage": "https://github.com/thrashplay/thrashplay-app-creators#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thrashplay/thrashplay-app-creators.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "eslint": ">= 6"
+  },
+  "scripts": {
+    "build": "echo No build script defined.",
+    "clean": "rm -rf dist",
+    "test": "echo No test script defined."
+  }
+}
